@@ -1,4 +1,4 @@
-# open-unmix-demo-icassp
+# open-unmix stem player
 
 ## Project setup
 ```
