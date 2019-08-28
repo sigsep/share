@@ -8,7 +8,7 @@
       right
       small
       v-on:click='playpause'
-      :loading='isLoading'
+      :disabled='isLoading'
       :depressed='isPlaying'
     >
       <v-icon>mdi-play</v-icon>
@@ -20,17 +20,27 @@
       right
       small
       v-on:click='stop'
-      :loading='isLoading'
+      :disabled='isLoading'
     >
       <v-icon>mdi-stop</v-icon>
     </v-btn>
     </div>
-    <div id="playlist"
-    ></div>
+    
+    <div id="playlist">
+    </div>
+    <v-progress-linear
+      color="green accent-2"
+      indeterminate
+      rounded
+      height="6"
+      :active="isLoading"
+    ></v-progress-linear>
+    <div style="margin-top: -20px" v-if="NumberOfTracks > 0">
       <b>Keyboard Shortcuts</b>: 
         Play/Pause: <kbd>Space</kbd> – 
         Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> – 
         Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> 
+    </div>
   </div>
 </template>
 
@@ -228,6 +238,7 @@ kbd {
 
 .playlist {
   margin: 0em 0;
+  min-height: 10em;
   width: 100%;
 }
   .playlist .playlist-time-scale {

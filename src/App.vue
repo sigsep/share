@@ -2,21 +2,19 @@
   <v-app id='app'>
   <v-container class="grey lighten-5">
     <v-row no-gutters>
-        <v-select
+        <v-select v-if="tracks.length > 1"
           v-model="selectedTrack"
           class="select"
           :items="tracks"
           light
           label="Select track to separate"
         ></v-select>
-
       <Player :urls="tracklist"></Player>
       <v-layout
         align-center
         justify-center
         style="background: red;"
       >
-
       </v-layout>
     </v-row>
   </v-container>    
@@ -34,7 +32,7 @@ export default {
     return {
       tracks: [],
       stems: [],
-      selectedTrack: 'AM Contra - Heart Peripheral',
+      selectedTrack: '',
       baseUrl: process.env.BASE_URL
     }
   },
@@ -49,6 +47,7 @@ export default {
      axios.get(this.baseUrl + 'headers.json').then(response => {
         this.tracks = response.data.tracks
         this.stems = response.data.stems
+        this.selectedTrack = response.data.selected_track
      })
     }
   },
