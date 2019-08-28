@@ -1,6 +1,6 @@
 <template>
   <v-app id='app'>
-  <v-container class="grey lighten-5">
+  <v-container>
     <v-row no-gutters>
         <v-select v-if="tracks.length > 1"
           v-model="selectedTrack"
