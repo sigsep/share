@@ -27,7 +27,10 @@
     </div>
     <div id="playlist"
     ></div>
-        <!-- <b>Keyboard Shortcuts</b>: Play/Pause: <kbd>Space</kbd> – Solo/Unsolo Sources: <kbd v-for="n in player.playlist.tracks.length">{{ n }} </kbd> – Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in player.playlist.tracks.length">{{ n }} </kbd>   -->
+      <b>Keyboard Shortcuts</b>: 
+        Play/Pause: <kbd>Space</kbd> – 
+        Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> – 
+        Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> 
   </div>
 </template>
 
@@ -121,7 +124,16 @@ export default {
     updateTime: function (playbackPosition) {
       this.playbackPosition = playbackPosition
     },
-
+  },
+  computed: {
+    NumberOfTracks: function () {
+      if (typeof this.player.playlist === "undefined") {
+        return 0
+      }
+      else {
+        return this.player.playlist.tracks.length
+      }
+    }
   },
   watch: {
     urls: {
@@ -144,7 +156,7 @@ kbd {
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 0.1em 0.5em;
+    padding: 0.1em 0.2em;
     margin: 0 0.2em;
     box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
     background-color: #f7f7f7;

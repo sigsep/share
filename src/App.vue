@@ -66,7 +66,6 @@ export default {
               ].join('/') + '.m4a'
           })
       }
-      console.log(trackstoload)
       return trackstoload
     }
   }
