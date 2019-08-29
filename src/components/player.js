@@ -1,6 +1,12 @@
 import * as WaveformPlaylist from 'waveform-playlist'
 
-var Player = function () {
+var Player = function (dark) {
+    if (dark) {
+        var wcolor = "black"
+    } else {
+        var wcolor = "white"
+    }
+    
     this.playlist = WaveformPlaylist.init({
         samplesPerPixel: 1280,
         waveHeight: 60,
@@ -10,7 +16,7 @@ var Player = function () {
         exclSolo: false,
         state: 'cursor',
         colors: {
-            waveOutlineColor: 'white'
+            waveOutlineColor: wcolor
         },
         controls: {
             show: true, //whether or not to include the track controls

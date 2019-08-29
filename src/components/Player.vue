@@ -2,6 +2,7 @@
   <div id='player'>
     <div>
     <v-btn
+      :dark="dark"
       fab
       color="green accent-2"
       top
@@ -15,6 +16,7 @@
     </v-btn>
     <v-btn
       fab
+      :dark="dark"
       color="red accent-2"
       top
       right
@@ -29,6 +31,7 @@
     <div id="playlist">
     </div>
     <v-progress-linear
+      :dark="dark"
       color="green accent-2"
       indeterminate
       rounded
@@ -47,11 +50,12 @@
 <script>
 import Mousetrap from 'mousetrap'
 import player from './player.js'
-
+import styles from './light.css';
 
 export default {
   components: {},
   props: {
+    dark: Boolean,
     urls: Array,
     title: String,
   },
@@ -68,7 +72,7 @@ export default {
   },
   mounted: function () {
     Mousetrap.bind('space', this.playpause )
-    this.player = new player();
+    this.player = new player(this.dark);
     this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded);
     this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime);
     this.update_tracks();
@@ -153,7 +157,3 @@ export default {
   }
 }
 </script>
-
-<style media="screen">
-@import './light.css';
-</style>

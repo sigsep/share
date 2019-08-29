@@ -1,15 +1,16 @@
 <template>
-  <v-app id='app'>
+  <v-app id='app' :dark="dark">
   <v-container>
     <v-row no-gutters>
         <v-select v-if="tracks.length > 1"
+          :dark="dark"
           v-model="selectedTrack"
           class="select"
           :items="tracks"
           light
           label="Select track to separate"
         ></v-select>
-      <Player :urls="tracklist"></Player>
+      <Player :ref="player" :urls="tracklist" :dark="dark"></Player>
       <v-layout
         align-center
         justify-center
@@ -30,6 +31,7 @@ export default {
   components: { Player },
   data () {
     return {
+      dark: false,
       tracks: [],
       stems: [],
       selectedTrack: '',
@@ -48,6 +50,7 @@ export default {
         this.tracks = response.data.tracks
         this.stems = response.data.stems
         this.selectedTrack = response.data.selected_track
+        this.dark = response.data.dark
      })
     }
   },

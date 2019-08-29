@@ -1,4 +1,5 @@
 { 
+    "dark": false,
     "stems": [
         "vocals", "drums", "bass", "other"
     ],
