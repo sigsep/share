@@ -50,9 +50,10 @@
 <script>
 import Mousetrap from 'mousetrap'
 import player from './player.js'
-import styles from './light.css';
+import styles from './dark.css';
 
 export default {
+  name: "player",
   components: {},
   props: {
     dark: Boolean,

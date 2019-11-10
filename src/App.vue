@@ -1,24 +1,58 @@
 <template>
   <v-app id='app' :dark="dark">
-  <v-container>
-    <v-row no-gutters>
-        <v-select v-if="tracks.length > 1"
-          :dark="dark"
-          v-model="selectedTrack"
-          class="select"
-          :items="tracks"
-          light
-          label="Select track to separate"
-        ></v-select>
-      <Player :ref="player" :urls="tracklist" :dark="dark"></Player>
-      <v-layout
-        align-center
-        justify-center
-        style="background: red;"
-      >
-      </v-layout>
-    </v-row>
-  </v-container>    
+      <v-form>
+      <v-container>
+        <v-row v-for="stem in stems" v-bind:key="stem.name">
+          <v-col cols="5" sm="5">
+            <v-text-field
+              v-model="stem.url"
+              label="Regular"
+              single-line
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="5">
+            <v-text-field
+              v-model="stem.url"
+              label="Regular"
+              single-line
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-btn
+            v-on:click="addButton"
+            color="pink"
+            fab
+            dark
+            small
+            bottom 
+            right
+            :disabled="allFilled"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+          <v-btn
+            v-on:click="loadTracks"
+            color="green"
+            fab
+            dark
+            small
+            bottom 
+            right
+            :disabled="allFilled"
+          >
+            <v-icon>mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-row>
+      </v-container> 
+    </v-form>
+    <v-card
+      color="dark-grey"
+      dark
+    >
+        <Player :ref="player" :urls="tracklist" :dark="dark"></Player>
+
+    </v-card>
   </v-app>
 </template>
 
@@ -26,49 +60,64 @@
 import Player from './components/Player.vue'
 import axios from 'axios'
 
+
 export default {
   name: 'App',
   components: { Player },
   data () {
     return {
-      dark: false,
-      tracks: [],
-      stems: [],
-      selectedTrack: '',
-      baseUrl: process.env.BASE_URL
+      dark: true,
+      player: null,
+      stems: [
+        { url: "" }
+      ],
+      trackstoload: [],
+      tracklist: []
     }
   },
   mounted: function () {
-    this.fetchData();
+    // this.fetchData();
   },
   created: function () {
     
   },
   methods: {
-    fetchData(){
+    validURL (str) {
+      var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+      return !!pattern.test(str)
+    },
+    addButton (){
+      this.stems.push({url: ""})
+    },
+    fetchData (){
      axios.get(this.baseUrl + 'headers.json').then(response => {
-        this.tracks = response.data.tracks
         this.stems = response.data.stems
         this.selectedTrack = response.data.selected_track
         this.dark = response.data.dark
      })
-    }
-  },
-  computed: {
-    tracklist: function () {
+    },
+    loadTracks () {
       var trackstoload = []
       for (let stem of this.stems) {
         trackstoload.push(
-            { 'name': stem,
-              'customClass': stem,
+            { 'name': "S",
+              'customClass': "S",
               'solo': false,
               'mute': false,
-              'src': [
-                'tracks', this.selectedTrack, stem
-              ].join('/') + '.m4a'
+              'src': stem.url
           })
       }
-      return trackstoload
+      this.tracklist = trackstoload
+    }
+  },
+  computed: {
+    allFilled: function () {
+      return this.stems.some( (stem, index) => (stem.url === "") )
     }
   }
 
@@ -76,9 +125,6 @@ export default {
 </script>
 
 <style lang="stylus">
-#app {
-   height: 100vh;
-}
 
 .select {
   z-index: 1000
