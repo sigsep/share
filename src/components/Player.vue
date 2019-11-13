@@ -1,9 +1,10 @@
 <template>
   <div id='player'>
+    
     <div>
+      <h1>{{title}}</h1>
     <v-btn
       :dark="dark"
-      fab
       color="green accent-2"
       top
       right
@@ -15,7 +16,6 @@
       <v-icon>mdi-play</v-icon>
     </v-btn>
     <v-btn
-      fab
       :dark="dark"
       color="red accent-2"
       top
@@ -28,8 +28,7 @@
     </v-btn>
     </div>
     
-    <div id="playlist">
-    </div>
+    <div ref="playlist" id="playlist"></div>
     <v-progress-linear
       :dark="dark"
       color="green accent-2"
@@ -73,7 +72,7 @@ export default {
   },
   mounted: function () {
     Mousetrap.bind('space', this.playpause )
-    this.player = new player(this.dark);
+    this.player = new player(this.dark, this.$refs);
     this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded);
     this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime);
     this.update_tracks();
@@ -106,10 +105,6 @@ export default {
             })(i, this)
           }
         }
-    },
-    addTrack: function (url) {
-      this.isLoading = true
-      this.player.addTrack(url)
     },
     saveState: function () {
       this.lastplaybackPosition = this.playbackPosition
@@ -152,8 +147,7 @@ export default {
   },
   watch: {
     urls: {
-      handler: 'update_tracks',
-      deep: true
+      handler: 'update_tracks'
     },
   }
 }
