@@ -1,15 +1,15 @@
 import * as WaveformPlaylist from 'waveform-playlist'
 
-var Player = function (dark, ref) {
+var Player = function (dark, ref, zoom=1280) {
     if (dark) {
         var wcolor = "black"
     } else {
         var wcolor = "white"
     }
     this.playlist = WaveformPlaylist.init({
-        samplesPerPixel: 1280,
+        samplesPerPixel: zoom,
         waveHeight: 60,
-        container: ref.playlist,
+        container: ref,
         timescale: true,
         mono: true,
         exclSolo: false,
@@ -22,7 +22,7 @@ var Player = function (dark, ref) {
             show: true, //whether or not to include the track controls
             width: 100 //width of controls in pixels
         },
-        zoomLevels: [1280]
+        zoomLevels: [zoom]
     });
 }
 

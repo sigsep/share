@@ -11,14 +11,26 @@
     <v-content>
       <v-form>
       <v-container fluid>
-        {{stems}}
-          <v-text-field
-              v-model="title"
+        <v-row>
+          <v-col cols="12" sm="8">
+            <v-text-field
+              v-model="playerconf.title"
               label="Track title"
               single-line
-          ></v-text-field>
-
-        <v-row v-for="stem in stems">
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="8">
+            <v-slider
+              v-model="playerconf.zoom"
+              class="align-center"
+              :max="10240"
+              :min="256"
+              hide-details
+            >
+            </v-slider>
+          </v-col>
+        </v-row>
+        <v-row v-for="stem in playerconf.streams">
           <v-col cols="12" sm="2">
             <v-text-field
               v-model="stem.name"
@@ -67,13 +79,14 @@
           </v-btn>
         </v-row>
       </v-container> 
+        {{playerconf}}
     </v-form>
       </v-content>
     <v-card
       color="dark-grey"
       dark
     >
-      <Player :ref="player" :urls="tracklist" :title="title" :dark="dark"></Player>
+      <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
     </v-card>
   </v-app>
 </template>
@@ -89,15 +102,18 @@ export default {
   data () {
     return {
       dark: true,
-      title: "",
       player: null,
-      stems: [
-        { 
+      combKey: 42,
+      playerconf: {
+        title: "My Track title",
+        zoom: 1024,
+        dark: true,
+        streams: [{ 
           name: "test",
           url: "https://dl.dropboxusercontent.com/s/3y0fnh2il9uchel/Marvin%20Gaye%20-%20I%20Heard%20It%20Through%20The%20Grapevine.mp3",
           color: "#000000"
-        }
-      ],
+        }]
+      },
       trackstoload: [],
       tracklist: []
     }
@@ -119,18 +135,12 @@ export default {
       return !!pattern.test(str)
     },
     addButton (){
-      this.stems.push({url: ""})
-    },
-    fetchData (){
-     axios.get(this.baseUrl + 'headers.json').then(response => {
-        this.stems = response.data.stems
-        this.selectedTrack = response.data.selected_track
-        this.dark = response.data.dark
-     })
+      this.playerconf.streams.push({url: ""})
     },
     loadTracks () {
+      this.combKey = Math.ceil(Math.random() * 10000)
       var trackstoload = []
-      for (let stem of this.stems) {
+      for (let stem of this.playerconf.streams) {
         trackstoload.push(
             { 'name': stem.name,
               'customClass': stem.name,
@@ -143,8 +153,11 @@ export default {
     }
   },
   computed: {
+    title: function () {
+      return this.playerconf.title
+    },
     allFilled: function () {
-      return this.stems.some( (stem, index) => (stem.url === "") )
+      return this.playerconf.streams.some( (stem, index) => (stem.url === "") )
     }
   }
 

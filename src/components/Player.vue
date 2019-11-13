@@ -2,9 +2,10 @@
   <div id='player'>
     
     <div>
+      {{ NumberOfTracks }}
       <h1>{{title}}</h1>
     <v-btn
-      :dark="dark"
+      :dark="conf.dark"
       color="green accent-2"
       top
       right
@@ -16,7 +17,7 @@
       <v-icon>mdi-play</v-icon>
     </v-btn>
     <v-btn
-      :dark="dark"
+      :dark="conf.dark"
       color="red accent-2"
       top
       right
@@ -28,9 +29,9 @@
     </v-btn>
     </div>
     
-    <div ref="playlist" id="playlist"></div>
+    <div ref="playlist"></div>
     <v-progress-linear
-      :dark="dark"
+      :dark="conf.dark"
       color="green accent-2"
       indeterminate
       rounded
@@ -55,9 +56,8 @@ export default {
   name: "player",
   components: {},
   props: {
-    dark: Boolean,
     urls: Array,
-    title: String,
+    conf: Object,
   },
   data: function () {
     return {
@@ -71,11 +71,8 @@ export default {
     }
   },
   mounted: function () {
-    Mousetrap.bind('space', this.playpause )
-    this.player = new player(this.dark, this.$refs);
-    this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded);
-    this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime);
-    this.update_tracks();
+    Mousetrap.bind('space', this.playpause)
+    this.initPlayer()
   },
   beforeDestroy: function () {
     Mousetrap.unbind('space');
@@ -88,7 +85,10 @@ export default {
     delete this.player;
   },
   methods: {
-    update_tracks: function () {
+    initPlayer: function () {
+      this.player = new player(this.conf.dark, this.$refs.playlist, this.conf.zoom)
+      this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded)
+      this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime)
       if(this.isLoading != true) {
         this.saveState()
         this.stop()
@@ -136,6 +136,13 @@ export default {
     },
   },
   computed: {
+    title: function () {
+      if (typeof this.conf === "undefined") {
+        return "Empty Track"
+      } else {
+        return this.conf.title
+      }
+    },
     NumberOfTracks: function () {
       if (typeof this.player.playlist === "undefined") {
         return 0
@@ -147,7 +154,7 @@ export default {
   },
   watch: {
     urls: {
-      handler: 'update_tracks'
+      handler: 'initPlayer'
     },
   }
 }
