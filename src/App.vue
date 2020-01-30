@@ -81,13 +81,16 @@
       </v-container> 
         {{playerconf}}
     </v-form>
-      </v-content>
     <v-card
+      max-width="900"
+      class="mx-auto"
       color="dark-grey"
       dark
     >
       <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
     </v-card>
+      </v-content>
+
   </v-app>
 </template>
 
@@ -108,11 +111,18 @@ export default {
         title: "My Track title",
         zoom: 1024,
         dark: true,
-        streams: [{ 
-          name: "test",
-          url: "https://dl.dropboxusercontent.com/s/3y0fnh2il9uchel/Marvin%20Gaye%20-%20I%20Heard%20It%20Through%20The%20Grapevine.mp3",
-          color: "#000000"
-        }]
+        streams: [
+          { 
+            name: "vocals",
+            url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
+            color: "#000000"
+          },
+          { 
+            name: "drums",
+            url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
+            color: "#48bd75"
+          },
+          ]
       },
       trackstoload: [],
       tracklist: []

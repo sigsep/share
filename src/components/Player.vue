@@ -2,8 +2,7 @@
   <div id='player'>
     
     <div>
-      {{ NumberOfTracks }}
-      <h1>{{title}}</h1>
+      <h2>{{title}}</h2>
     <v-btn
       :dark="conf.dark"
       color="green accent-2"
@@ -30,6 +29,7 @@
     </div>
     
     <div ref="playlist"></div>
+    <p></p>
     <v-progress-linear
       :dark="conf.dark"
       color="green accent-2"
