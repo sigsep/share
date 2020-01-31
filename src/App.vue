@@ -98,7 +98,6 @@
 
 <script>
 import Player from './components/Player.vue'
-import axios from 'axios'
 
 
 export default {
@@ -171,7 +170,7 @@ export default {
       return this.playerconf.title
     },
     allFilled: function () {
-      return this.playerconf.streams.some( (stem, index) => (stem.url === "") )
+      return this.playerconf.streams.some( (stem) => (stem.url === "") )
     }
   }
 
