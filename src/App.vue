@@ -11,15 +11,16 @@
     <v-content>
       <v-form>
       <v-container fluid>
-        <v-row>
-          <v-col cols="12" sm="8">
+        <v-row dense>
+          <v-col dense cols="8" sm="8">
             <v-text-field
               v-model="playerconf.title"
               label="Track title"
               single-line
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="8">
+          <v-col cols="4" sm="4">
+            Waveform Zoom
             <v-slider
               v-model="playerconf.zoom"
               class="align-center"
@@ -79,9 +80,10 @@
           </v-btn>
         </v-row>
       </v-container> 
-        {{playerconf}}
+        <!-- {{playerconf}} -->
     </v-form>
     <v-card
+      v-if="showPlayer"
       max-width="900"
       class="mx-auto"
       color="dark-grey"
@@ -107,6 +109,7 @@ export default {
       dark: true,
       player: null,
       combKey: 42,
+      showPlayer: false,
       playerconf: {
         title: "My Track title",
         zoom: 1024,
@@ -148,6 +151,7 @@ export default {
       this.playerconf.streams.push({url: ""})
     },
     loadTracks () {
+      this.showPlayer = true
       this.combKey = Math.ceil(Math.random() * 10000)
       var trackstoload = []
       for (let stem of this.playerconf.streams) {
