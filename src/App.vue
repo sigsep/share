@@ -105,6 +105,8 @@
       >
         Share
       </v-btn>
+
+      {{shareURL}}
     
     </v-sheet>
     
@@ -127,30 +129,38 @@ export default {
       combKey: 42,
       showPlayer: false,
       showInsertForm: true,
-      playerconf: {
-        title: "My Track title",
-        zoom: 1024,
-        dark: true,
-        streams: [
-          { 
-            name: "vocals",
-            url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
-            color: "#000000"
-          },
-          { 
-            name: "drums",
-            url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
-            color: "#48bd75"
-          },
-          ]
-      },
+      shareURL: "",
       trackstoload: [],
       tracklist: []
     }
   },
   mounted: function () {
     // get url
+    var currentUrl = window.location.pathname;
     // if url is not null (?) go to firebase to get the tracks
+    if(currentUrl != "/"){
+      this.playerconf = {}
+      db.collection('multitracks')
+        .doc(currentUrl)
+        .get()
+        .then(snapshot => {
+          const document = snapshot.data()
+          this.playerconf.dark = document.dark
+          this.playerconf.zoom = document.zoom
+          this.playerconf.title = document.title
+          this.playerconf.streams = []
+          for(let i = 0; i < document.streams.length; i++){
+            let s = document.streams[i]
+            console.log(s)
+            let stream = {name: s.name, url: s.url, color: s.color}
+            this.playerconf.streams.push(stream)
+            console.log(this.playerconf.streams)
+          }
+          this.showPlayer = true
+          this.showInsertForm = false
+        })
+        console.log(this.playerconf)
+    }
     // if null, present the fields to create player 
   },
   created: function () {
@@ -185,10 +195,11 @@ export default {
       this.tracklist = trackstoload
     },
     async insertTracks () {
-      console.log("peepee")
-      await db.collection("multitracks").add(this.playerconf)
+      var record = await db.collection("multitracks").add(this.playerconf)
       this.showInsertForm = false
-      console.log("poopoo")
+      var currentUrl = window.location.pathname;
+      console.log(currentUrl)
+      this.shareURL = "http://localhost:8080/" + record.id
     },
   },
   computed: {
