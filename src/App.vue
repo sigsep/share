@@ -10,7 +10,10 @@
 
     <v-content>
       <v-form>
-      <v-container fluid>
+      <v-container 
+        v-if="showInsertForm"
+        fluid
+      >
         <v-row dense>
           <v-col dense cols="8" sm="8">
             <v-text-field
@@ -82,23 +85,37 @@
       </v-container> 
         <!-- {{playerconf}} -->
     </v-form>
-    <v-card
+    <v-sheet
       v-if="showPlayer"
-      max-width="900"
-      class="mx-auto"
-      color="dark-grey"
-      dark
     >
-      <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
-    </v-card>
-      </v-content>
+      <v-card
+        max-width="900"
+        class="mx-auto"
+        color="dark-grey"
+        dark
+      >
+        <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
+      </v-card>
+
+      <v-btn
+        v-on:click="insertTracks"
+        color="blue"
+        dark
+        small
+      >
+        Share
+      </v-btn>
+    
+    </v-sheet>
+    
+  </v-content>
 
   </v-app>
 </template>
 
 <script>
 import Player from './components/Player.vue'
-
+import {db} from '@/main'
 
 export default {
   name: 'App',
@@ -109,6 +126,7 @@ export default {
       player: null,
       combKey: 42,
       showPlayer: false,
+      showInsertForm: true,
       playerconf: {
         title: "My Track title",
         zoom: 1024,
@@ -131,7 +149,9 @@ export default {
     }
   },
   mounted: function () {
-    // this.fetchData();
+    // get url
+    // if url is not null (?) go to firebase to get the tracks
+    // if null, present the fields to create player 
   },
   created: function () {
     
@@ -163,7 +183,13 @@ export default {
           })
       }
       this.tracklist = trackstoload
-    }
+    },
+    async insertTracks () {
+      console.log("peepee")
+      await db.collection("multitracks").add(this.playerconf)
+      this.showInsertForm = false
+      console.log("poopoo")
+    },
   },
   computed: {
     title: function () {
