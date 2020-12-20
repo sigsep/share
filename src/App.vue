@@ -130,6 +130,23 @@ export default {
       showPlayer: false,
       showInsertForm: true,
       shareURL: "",
+      playerconf: {
+        title: "My Track title",
+        zoom: 1024,
+        dark: true,
+        streams: [
+          { 
+            name: "vocals",
+            url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
+            color: "#000000"
+          },
+          { 
+            name: "drums",
+            url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
+            color: "#48bd75"
+          },
+          ]
+      },
       trackstoload: [],
       tracklist: []
     }
