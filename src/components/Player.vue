@@ -1,5 +1,5 @@
 <template>
-  <div id='player'>
+  <div id='player' class="pa-2">
     
     <div>
       <h2>{{title}}</h2>
