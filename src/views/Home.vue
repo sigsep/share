@@ -1,11 +1,11 @@
 <template>
-  <v-app id='app' :dark="dark">
+<v-app id='app' :dark="dark">
     <v-app-bar
       app
       clipped-left
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>SepShare</v-toolbar-title>
+      <v-toolbar-title>share.unmix.app</v-toolbar-title>
     </v-app-bar>
 
     <v-content>
@@ -19,21 +19,21 @@
               v-model="playerconf.title"
               label="Track title"
               single-line
+              solo
             ></v-text-field>
           </v-col>
           <v-col cols="4" sm="4">
-            Waveform Zoom
+            Waveform Zoom {{ playerconf.zoom }} Samples per Pixel
             <v-slider
               v-model="playerconf.zoom"
               class="align-center"
               :max="10240"
               :min="256"
-              hide-details
             >
             </v-slider>
           </v-col>
         </v-row>
-        <v-row v-for="stem in playerconf.streams" v-bind:key="stem">
+        <v-row v-for="stem in playerconf.streams">
           <v-col cols="12" sm="2">
             <v-text-field
               v-model="stem.name"
@@ -62,15 +62,18 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-btn
-            v-on:click="addButton"
-            color="pink"
-            dark
-            small
-            :disabled="allFilled"
-          >
-            <v-icon>mdi-plus</v-icon>Add Track
-          </v-btn>
+          <v-col>
+            <v-btn
+              v-on:click="addButton"
+              color="pink"
+              dark
+              small
+              :disabled="allFilled"
+            >
+              <v-icon>mdi-plus</v-icon>Add Track
+            </v-btn>
+        </v-col>
+        <v-col>
           <v-btn
             v-on:click="loadTracks"
             color="green"
@@ -80,21 +83,19 @@
           >
             <v-icon>mdi-arrow-right</v-icon> Preview Track
           </v-btn>
+        </v-col>
         </v-row>
       </v-container> 
-        <!-- {{playerconf}} -->
-    </v-form>
-    <v-sheet
-      v-if="showPlayer"
-    >
-      <v-card
-        max-width="900"
-        class="mx-auto"
-        color="dark-grey"
-        dark
-      >
-        <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
-      </v-card>
+      </v-form>
+    </v-content>
+    <v-content style="background-color:  white">
+      <v-container>
+        <v-sheet
+          v-if="showPlayer"
+          max-width="900"
+          elevation="10"
+        >
+            <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
 
       <v-btn
         v-on:click="insertTracks"
@@ -107,11 +108,10 @@
       </v-btn>
 
       <router-link :to="routeId">{{"http://localhost:8080/#"+routeId}}</router-link>
-    
-    </v-sheet>
-    
-  </v-content>
-
+        
+        </v-sheet>
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
@@ -154,7 +154,6 @@ export default {
   mounted: function () { 
   },
   created: function () {
-    console.log(this.$route)
   },
   methods: {
     validURL (str) {
