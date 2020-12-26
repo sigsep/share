@@ -1,5 +1,8 @@
 <template>
-  <v-app id='app' :dark="dark">
+  <v-app id='app' :dark="dark" style="
+    margin-left: 5%;
+    margin-right: 5%;
+  ">
     <v-app-bar
       app
       clipped-left
@@ -10,7 +13,7 @@
 
     <v-content>
       <v-form>
-      <v-container 
+      <v-container
         v-if="showInsertForm"
         fluid
       >
@@ -43,7 +46,7 @@
               solo dense
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="1">
+          <v-col cols="12" sm="2">
             <v-text-field
               v-model="stem.color"
               label="Color"
@@ -52,12 +55,12 @@
               dense
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="9">
+          <v-col cols="12" sm="8">
             <v-text-field
               v-model="stem.url"
               label="URL"
               single-line
-              solo 
+              solo
               dense
             ></v-text-field>
           </v-col>
@@ -86,15 +89,15 @@
           </v-btn>
         </v-col>
         </v-row>
-      </v-container> 
+      </v-container>
       </v-form>
     </v-content>
-    <v-content style="background-color:  white">
+    <v-divider></v-divider>
+    <v-content style="background-color: rgb(48, 48, 48); padding: 0px 0px 0px" id="playerContainer">
       <v-container>
         <v-sheet
           v-if="showPlayer"
-          max-width="900"
-          elevation="10"
+          margin="auto"
         >
             <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
 
@@ -108,7 +111,7 @@
           </v-btn>
 
           {{shareURL}}
-        
+
         </v-sheet>
       </v-container>
     </v-content>
@@ -135,12 +138,12 @@ export default {
         zoom: 1024,
         dark: true,
         streams: [
-          { 
+          {
             name: "vocals",
             url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
             color: "#000000"
           },
-          { 
+          {
             name: "drums",
             url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
             color: "#48bd75"
@@ -168,20 +171,20 @@ export default {
           this.playerconf.streams = []
           for(let i = 0; i < document.streams.length; i++){
             let s = document.streams[i]
-            console.log(s)
+            this.console.log(s)
             let stream = {name: s.name, url: s.url, color: s.color}
             this.playerconf.streams.push(stream)
-            console.log(this.playerconf.streams)
+            this.console.log(this.playerconf.streams)
           }
           this.showPlayer = true
           this.showInsertForm = false
         })
-        console.log(this.playerconf)
+      this.console.log(this.playerconf)
     }
-    // if null, present the fields to create player 
+    // if null, present the fields to create player
   },
-  created: function () {
-    
+  created: function () {``
+
   },
   methods: {
     validURL (str) {
@@ -215,7 +218,7 @@ export default {
       var record = await db.collection("multitracks").add(this.playerconf)
       this.showInsertForm = false
       var currentUrl = window.location.pathname;
-      console.log(currentUrl)
+      this.console.log(currentUrl)
       this.shareURL = "http://localhost:8080/" + record.id
     },
   },
