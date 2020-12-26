@@ -1,8 +1,5 @@
 <template>
-  <v-app id='app' :dark="dark" style="
-    margin-left: 5%;
-    margin-right: 5%;
-  ">
+  <v-app id='app' :dark="dark">
     <v-app-bar
       app
       clipped-left
@@ -94,15 +91,18 @@
         >
             <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
 
-      <v-btn
-        v-on:click="insertTracks"
-        v-if="enableShare"
-        color="blue"
-        dark
-        small
-      >
-        Share
-      </v-btn>
+      <div style="background-color: rgb(48, 48, 48);">
+        <v-btn
+                v-on:click="insertTracks"
+                v-if="enableShare"
+                color="blue"
+                dark
+                small
+        >
+          Share
+        </v-btn>
+      </div>
+
 
       <router-link :to="routeId">{{"http://localhost:8080/#"+routeId}}</router-link>
 

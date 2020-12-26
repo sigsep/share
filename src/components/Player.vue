@@ -1,6 +1,6 @@
 <template>
-  <div id='player' class="pa-2">
-    
+  <div id='player' class="pa-2" style="background-color: rgb(48, 48, 48);">
+
     <div>
       <h2>{{title}}</h2>
     <v-btn
@@ -27,7 +27,7 @@
       <v-icon>mdi-stop</v-icon>
     </v-btn>
     </div>
-    
+
     <div ref="playlist"></div>
     <p></p>
     <v-progress-linear
@@ -39,10 +39,10 @@
       :active="isLoading"
     ></v-progress-linear>
     <div style="margin-top: -20px" v-if="NumberOfTracks > 0">
-      <b>Keyboard Shortcuts</b>: 
-        Play/Pause: <kbd>Space</kbd> – 
-        Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> – 
-        Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> 
+      <b>Keyboard Shortcuts</b>:
+        Play/Pause: <kbd>Space</kbd> –
+        Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> –
+        Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd>
     </div>
   </div>
 </template>
