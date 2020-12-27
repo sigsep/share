@@ -32,7 +32,25 @@
 <!--            </v-slider>-->
 <!--          </v-col>-->
         </v-row>
-        <v-row v-for="stem in playerconf.streams">
+        <v-row justify="center" align="center" v-for="stem in playerconf.streams">
+          <v-col cols="12" sm="1">
+            <v-menu
+              ref="stemmenu"
+              v-model="stem.menu"
+              :close-on-content-click="false"
+            >
+            <template v-slot:activator="{ on }">
+            <v-btn :color="stem.color" v-on="on"></v-btn>
+            </template>
+            <v-color-picker
+              class="ma-2"
+              v-model="stem.color"
+              v-if="stem.menu"
+              @click="$refs.stemmenu.save(stem.color)"
+            >
+            </v-color-picker>
+            </v-menu>
+          </v-col>
           <v-col cols="12" sm="2">
             <v-text-field
               v-model="stem.name"
@@ -40,14 +58,7 @@
               placeholder="Source Name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="2">
-            <v-text-field
-              v-model="stem.color"
-              label="Color"
-              placeholder="Color"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="8">
+          <v-col cols="12" sm="9">
             <v-text-field
               v-model="stem.url"
               label="URL"
@@ -135,12 +146,14 @@ export default {
           {
             name: "vocals",
             url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
-            color: "#000000"
+            color: "#000000",
+            menu: false
           },
           {
             name: "drums",
             url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
-            color: "#48bd75"
+            color: "#48bd75",
+            menu: false
           },
           ]
       },
