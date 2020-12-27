@@ -1,4 +1,4 @@
-# open-unmix stem player
+# sigsep share platform
 
 ## Project setup
 ```
