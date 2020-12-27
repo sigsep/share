@@ -182,10 +182,10 @@ export default {
       this.showPlayer = true
       this.combKey = Math.ceil(Math.random() * 10000)
       var trackstoload = []
-      for (let stem of this.playerconf.streams) {
+      for (const [index, stem] of this.playerconf.streams.entries()) {
         trackstoload.push(
             { 'name': stem.name,
-              'customClass': stem.name,
+              'customClass': "track" + index.toString(),
               'solo': false,
               'mute': false,
               'src': stem.url
