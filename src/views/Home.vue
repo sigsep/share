@@ -67,7 +67,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col sm="2">
             <v-btn
               v-on:click="addButton"
               color="pink"
@@ -78,7 +78,7 @@
               <v-icon>mdi-plus</v-icon>Add Track
             </v-btn>
         </v-col>
-        <v-col>
+        <v-col sm="3">
           <v-btn
             v-on:click="loadTracks"
             color="green"
@@ -93,12 +93,11 @@
       </v-container>
       </v-form>
     </v-content>
-    <v-divider></v-divider>
-    <v-content style="background-color: rgb(48, 48, 48); padding: 0px 0px 0px" id="playerContainer">
+    <v-content style="background-color: white; padding: 10px 10px 10px" v-if="showPlayer">
       <v-container>
         <v-sheet
-          v-if="showPlayer"
           margin="auto"
+          elevation="10"
         >
             <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
 
@@ -176,7 +175,14 @@ export default {
       return !!pattern.test(str)
     },
     addButton (){
-      this.playerconf.streams.push({url: ""})
+      this.playerconf.streams.push(
+        {
+          name: "",
+          url: "",
+          color: "#" + Math.floor(Math.random()*16777215).toString(16),
+          menu: false
+        }
+      )
     },
     loadTracks () {
       this.showPlayer = true
