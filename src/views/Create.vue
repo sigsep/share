@@ -9,9 +9,7 @@
 
     <v-content>
       <v-form>
-      <v-container
-        fluid
-      >
+      <v-container>
         <v-row dense>
           <v-col dense cols="12" sm="12">
             <v-text-field
@@ -94,28 +92,39 @@
       </v-form>
     </v-content>
     <v-content style="background-color: white; padding: 0px 10px 10px" v-if="showPlayer">
-      <v-container>
-        <v-container justify="center" align="center">
-        <v-btn
-                v-on:click="insertTracks"
-                v-if="enableShare"
-                color="blue"
-                dark
-                small
-        >
-          Share
-        </v-btn>
-      <router-link :to="routeId">{{"https://sigsep.github.io/"+routeId}}</router-link>
-
-    </v-container>
-        <v-sheet
-          margin="auto"
-          elevation="10"
-        >
-            <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
-        </v-sheet>
-
+      <v-container fill-height>
+        <v-row>
+          <v-col>
+          <v-btn
+            v-on:click="insertTracks"
+            v-if="enableShare"
+            style="margin-right: 0em"
+            color="primary"
+            left
+            large
+          >
+            Share
+          </v-btn>
+            <router-link :to="routeId">{{"https://sigsep.github.io"+routeId}}</router-link>
+          </v-col>
+        </v-row>
+        <v-row align="center"
+            justify="center">
+            <v-col>
+              <v-sheet
+                margin="auto"
+                elevation="10"
+              >
+                  <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
+              </v-sheet>
+            </v-col>
+        </v-row>
       </v-container>
+
+      <!-- <pre>
+          <iframe width="100%" height="490rem" src="{"https://sigsep.github.io"+routeId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" class="" allowfullscreen></iframe>
+      </pre> -->
+
     </v-content>
   </v-app>
 </template>
@@ -221,4 +230,5 @@ export default {
 .select {
   z-index: 1000
 }
+
 </style>
