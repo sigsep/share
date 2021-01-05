@@ -24,12 +24,12 @@
             class="text-center"
             style="padding-left: 0px; padding-right: 0px"
           >
-            <div ref="playlist"></div>
+            <div id="playlist" ref="playlist"></div>
             <div style="margin-bottom: -10px; margin-top: 5px" v-if="NumberOfTracks > 0">
               <b>Keyboard Shortcuts</b>:
                 Play/Pause: <kbd>Space</kbd> –
-                Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> –
-                Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd>
+                Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd> –
+                Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd>
             </div>
           </v-card-text>
           </v-card>
@@ -39,7 +39,7 @@
 <script>
 import Mousetrap from 'mousetrap'
 import player from './player.js'
-import styles from './dark.css';
+import './dark.css';
 
 export default {
   name: "player",
@@ -50,6 +50,10 @@ export default {
   },
   data: function () {
     return {
+      bgColor: {
+        type: String,
+        default: "red"
+      },
       isPlaying: false,
       isLoading: false,
       player: Object,
@@ -76,6 +80,9 @@ export default {
   methods: {
     initPlayer: function () {
       this.player = new player(this.conf.dark, this.$refs.playlist, this.conf.zoom)
+      const playlist = this.$refs.playlist
+      console.log(this.$refs.playlist.$el)
+      playlist.style.setProperty("width", 100)
       this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded)
       this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime)
       if(this.isLoading != true) {
@@ -151,9 +158,10 @@ export default {
 </script>
 
 
-<style lang="stylus">
+<style>
 
-.playlist {
-  z-index: 1
+#playlist .playlist-tracks .track0 header {
+  background-color: red ;
 }
+
 </style>
