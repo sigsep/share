@@ -161,7 +161,13 @@ export default {
 <style>
 
 #playlist .playlist-tracks .track0 header {
-  background-color: red ;
+  background-color:#000000;
+  color: white;
+}
+
+#playlist .playlist-tracks .track1 header {
+  background-color:#48bd75;
+  color: white;
 }
 
 </style>
