@@ -29,7 +29,7 @@
 <!--            </v-slider>-->
 <!--          </v-col>-->
         </v-row>
-        <v-row justify="center" align="center" v-for="stem in playerconf.streams"  v-bind:key="stem">
+        <v-row justify="center" align="center" v-for="(stem, index) in playerconf.streams"  v-bind:key="index">
           <v-col cols="12" sm="1">
             <v-menu
               ref="stemmenu"
@@ -95,17 +95,26 @@
       <v-container fill-height>
         <v-row>
           <v-col>
-          <v-btn
-            v-on:click="insertTracks"
-            v-if="enableShare"
-            style="margin-right: 0em"
-            color="primary"
-            left
-            large
-          >
-            Share
-          </v-btn>
-            <router-link :to="routeId">{{"https://sigsep.github.io"+routeId}}</router-link>
+            <v-btn
+              v-on:click="insertTracks"
+              v-if="enableShare"
+              style="margin-right: 0em"
+              color="primary"
+              left
+              large
+            >
+              Share
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-text-field
+              :value="shareURL"
+              light
+              :disabled="enableShare"
+              outlined
+              label="Share URL"
+              readonly
+              ></v-text-field>
           </v-col>
         </v-row>
         <v-row align="center"
@@ -144,6 +153,7 @@ export default {
       showPlayer: false,
       enableShare: true,
       shareURL: "",
+      routeId: "",
       playerconf: {
         title: "My Track title",
         zoom: 1024,
@@ -208,8 +218,10 @@ export default {
       this.tracklist = trackstoload
     },
     async insertTracks () {
+      // TODO: set a flag for is loaded
       var record = await db.collection("multitracks").add(this.playerconf)
       this.routeId = "/" + record.id  // TODO: get real url from router
+      this.shareURL = "https://sigsep.github.io/share/#" + this.routeId
       this.enableShare = false
     },
   },
