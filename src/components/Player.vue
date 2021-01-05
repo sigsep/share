@@ -1,56 +1,45 @@
 <template>
-  <div id='player'>
-    
-    <div>
-      <h2>{{title}}</h2>
-    <v-btn
-      :dark="conf.dark"
-      color="green accent-2"
-      top
-      right
-      small
-      v-on:click='playpause'
-      :disabled='isLoading'
-      :depressed='isPlaying'
-    >
-      <v-icon>mdi-play</v-icon>
-    </v-btn>
-    <v-btn
-      :dark="conf.dark"
-      color="red accent-2"
-      top
-      right
-      small
-      v-on:click='stop'
-      :disabled='isLoading'
-    >
-      <v-icon>mdi-stop</v-icon>
-    </v-btn>
-    </div>
-    
-    <div ref="playlist"></div>
-    <p></p>
-    <v-progress-linear
-      :dark="conf.dark"
-      color="green accent-2"
-      indeterminate
-      rounded
-      height="6"
-      :active="isLoading"
-    ></v-progress-linear>
-    <div style="margin-top: -20px" v-if="NumberOfTracks > 0">
-      <b>Keyboard Shortcuts</b>: 
-        Play/Pause: <kbd>Space</kbd> – 
-        Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> – 
-        Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n">{{ n }}</kbd> 
-    </div>
-  </div>
+  <div>
+        <v-card>
+          <v-toolbar>
+          <v-toolbar-title class="white--text">
+            {{title}}
+          </v-toolbar-title>
+                <v-btn
+                  :dark="conf.dark"
+                  style="margin-right: 0em"
+                  color="green accent-2"
+                  bottom
+                  right
+                  absolute
+                  fab
+                  v-on:click='playpause'
+                  :loading='isLoading'
+                >
+                  <v-icon v-if="!isPlaying">mdi-play</v-icon>
+                  <v-icon v-else>mdi-pause</v-icon>
+                </v-btn>
+              </v-toolbar>
+          <v-card-text
+            class="text-center"
+            style="padding-left: 0px; padding-right: 0px"
+          >
+            <div id="playlist" ref="playlist"></div>
+            <div style="margin-bottom: -10px; margin-top: 5px" v-if="NumberOfTracks > 0">
+              <b>Keyboard Shortcuts</b>:
+                Play/Pause: <kbd>Space</kbd> –
+                Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd> –
+                Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd>
+            </div>
+          </v-card-text>
+          </v-card>
+      </div>
 </template>
 
 <script>
 import Mousetrap from 'mousetrap'
 import player from './player.js'
-import styles from './dark.css';
+import './dark.css';
 
 export default {
   name: "player",
@@ -61,6 +50,10 @@ export default {
   },
   data: function () {
     return {
+      bgColor: {
+        type: String,
+        default: "red"
+      },
       isPlaying: false,
       isLoading: false,
       player: Object,
@@ -87,6 +80,9 @@ export default {
   methods: {
     initPlayer: function () {
       this.player = new player(this.conf.dark, this.$refs.playlist, this.conf.zoom)
+      const playlist = this.$refs.playlist
+      console.log(this.$refs.playlist.$el)
+      playlist.style.setProperty("width", 100)
       this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded)
       this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime)
       if(this.isLoading != true) {
@@ -112,6 +108,7 @@ export default {
     playpause: function (event) {
       if (this.isPlaying) {
         this.player.playlist.getEventEmitter().emit('pause')
+
       }
       else {
         this.player.playlist.getEventEmitter().emit('play')
@@ -159,3 +156,18 @@ export default {
   }
 }
 </script>
+
+
+<style>
+
+#playlist .playlist-tracks .track0 header {
+  background-color:#000000;
+  color: white;
+}
+
+#playlist .playlist-tracks .track1 header {
+  background-color:#48bd75;
+  color: white;
+}
+
+</style>
