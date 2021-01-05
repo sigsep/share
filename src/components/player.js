@@ -1,6 +1,6 @@
 import * as WaveformPlaylist from 'waveform-playlist'
 
-var Player = function (dark, ref, zoom=1280) {
+var Player = function (dark, ref, zoom = 1280, exclSolo = False) {
     if (dark) {
         var wcolor = "black"
     } else {
@@ -12,7 +12,7 @@ var Player = function (dark, ref, zoom=1280) {
         container: ref,
         timescale: true,
         mono: true,
-        exclSolo: false,
+        exclSolo: exclSolo,
         isAutomaticScroll: true,
         state: 'cursor',
         colors: {

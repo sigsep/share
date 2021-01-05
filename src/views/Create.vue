@@ -55,37 +55,69 @@
               placeholder="Source Name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="9">
+          <v-col cols="12" sm="7">
             <v-text-field
               v-model="stem.url"
               label="URL"
               placeholder="URL"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" sm="1">
+            <v-switch
+              v-model="stem.mute"
+              label="mute"
+            ></v-switch>
+          </v-col>
+          <v-col cols="12" sm="1">
+            <v-switch
+              v-model="stem.solo"
+              label="solo"
+            ></v-switch>
+          </v-col>
         </v-row>
         <v-row>
+          <v-col cols="12" sm="2">
+            <v-btn
+              v-on:click="addButton"
+              color="primary"
+              :disabled="allFilled"
+            >
+              <v-icon>mdi-plus</v-icon>Add Track
+            </v-btn>
+         </v-col>
 
-          <v-col cols="12" sm="6">
-            <v-btn-toggle
-          >
-                <v-btn
-                  v-on:click="addButton"
-                  color="primary"
-                  small
-                  :disabled="allFilled"
-                >
-                  <v-icon>mdi-plus</v-icon>Add Track
-                </v-btn>
-              <v-btn
-                v-on:click="loadTracks"
-                color="green"
-                small
-                :disabled="allFilled"
-              >
-                <v-icon>mdi-arrow-right</v-icon> Preview Track
-              </v-btn>
-
-          </v-btn-toggle>
+          <v-col cols="12" sm="2">
+            <v-btn
+              v-on:click="loadTracks"
+              color="green"
+              :disabled="allFilled"
+            >
+              <v-icon>mdi-arrow-right</v-icon> Preview Track
+            </v-btn>
+         </v-col>
+         <v-col cols="12" sm="2">
+            <v-switch
+              v-model="playerconf.exclSolo"
+              label="Solo switch-mode"
+            ></v-switch>
+         </v-col>
+         <v-col cols="12" sm="2">
+          <v-menu
+              ref="titlecolormenu"
+              v-model="titleColorMenu"
+              :close-on-content-click="false"
+            >
+            <template v-slot:activator="{ on }">
+              <v-btn  :color="playerconf.titleColor" v-on="on"></v-btn>
+            </template>
+            <v-color-picker
+              class="ma-2"
+              v-model="playerconf.titleColor"
+              v-if="titleColorMenu"
+              @click="$refs.titlecolormenu.save(playerconf.titleColor)"
+            >
+            </v-color-picker>
+            </v-menu>
          </v-col>
         </v-row>
       </v-container>
@@ -154,21 +186,28 @@ export default {
       enableShare: true,
       shareURL: "",
       routeId: "",
+      titleColorMenu: false,
       playerconf: {
         title: "My Track title",
         zoom: 1024,
+        titleColor: "#666666",
         dark: true,
+        exclSolo: false,
         streams: [
           {
             name: "vocals",
             url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
             color: "#000000",
+            mute: false,
+            solo: false,
             menu: false
           },
           {
             name: "drums",
             url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
             color: "#48bd75",
+            mute: false,
+            solo: false,
             menu: false
           },
           ]
@@ -210,8 +249,8 @@ export default {
             { 'name': stem.name,
               'waveOutlineColor': stem.color,
               'customClass': "track" + index.toString(),
-              'solo': false,
-              'mute': false,
+              'solo': stem.solo,
+              'mute': stem.mute,
               'src': stem.url
           })
       }
