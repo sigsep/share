@@ -265,7 +265,7 @@ export default {
       // TODO: set a flag for is loaded
       var record = await db.collection("multitracks").add(this.playerconf)
       this.routeId = "/" + record.id  // TODO: get real url from router
-      this.shareURL = "https://sigsep.github.io/share/#" + this.routeId
+      this.shareURL = "https://share.unmix.app" + this.routeId
       this.enableShare = false
     },
   },
