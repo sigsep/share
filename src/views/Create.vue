@@ -230,6 +230,11 @@ export default {
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
       return !!pattern.test(str)
     },
+    processURL (str) {
+      // TODO: 1) identify dropbox share 2) light up button 3) on button press, convert url
+        var str = "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a";
+        var res = str.split("/").slice(4, 6);
+    },
     addButton (){
       this.playerconf.streams.push(
         {
