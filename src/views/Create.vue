@@ -55,7 +55,7 @@
               placeholder="Source Name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="7">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="stem.url"
               label="URL"
@@ -262,7 +262,7 @@ export default {
       this.tracklist = trackstoload
     },
     async insertTracks () {
-      // TODO: set a flag for is loaded
+      // TODO: set a flag for is_loaded
       var record = await db.collection("multitracks").add(this.playerconf)
       this.routeId = "/" + record.id  // TODO: get real url from router
       this.shareURL = "https://share.unmix.app" + this.routeId
