@@ -18,16 +18,6 @@
               placeholder="Track title"
             ></v-text-field>
           </v-col>
-<!--          <v-col cols="4" sm="4">-->
-<!--            Waveform Zoom {{ playerconf.zoom }} Samples per Pixel-->
-<!--            <v-slider-->
-<!--              v-model="playerconf.zoom"-->
-<!--              class="align-center"-->
-<!--              :max="10240"-->
-<!--              :min="256"-->
-<!--            >-->
-<!--            </v-slider>-->
-<!--          </v-col>-->
         </v-row>
         <v-row justify="center" align="center" v-for="(stem, index) in playerconf.streams"  v-bind:key="index">
           <v-col cols="12" sm="1">
@@ -118,7 +108,19 @@
             >
             </v-color-picker>
             </v-menu>
+            Title Color
          </v-col>
+         <v-col cols="12" sm="2">
+            Visible excerpt {{ 980 * (playerconf.zoom / 44100) }} (in seconds)
+            <v-slider
+              v-model="playerconf.zoom"
+              class="align-center"
+              :max="8192"
+              :min="256"
+            >
+            </v-slider>
+          </v-col>
+
         </v-row>
       </v-container>
       </v-form>
@@ -156,7 +158,7 @@
                 margin="auto"
                 elevation="10"
               >
-                  <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
+                  <Player ref="player" :key="combKey" :urls="tracklist" :conf="playerconf"></Player>
               </v-sheet>
             </v-col>
         </v-row>
@@ -230,11 +232,11 @@ export default {
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
       return !!pattern.test(str)
     },
-    processURL (str) {
+    // processURL (str) {
       // TODO: 1) identify dropbox share 2) light up button 3) on button press, convert url
-        var str = "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a";
-        var res = str.split("/").slice(4, 6);
-    },
+        // var str = "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a";
+        // var res = str.split("/").slice(4, 6);
+    // },
     addButton (){
       this.playerconf.streams.push(
         {
@@ -270,6 +272,10 @@ export default {
     },
   },
   computed: {
+    playersize: function () {
+      console.log(this.$refs.player.$el.width)
+      return 1.0
+    },
     title: function () {
       return this.playerconf.title
     },
