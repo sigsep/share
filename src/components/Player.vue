@@ -1,25 +1,25 @@
 <template>
   <div>
         <v-card>
-          <v-toolbar>
-          <v-toolbar-title class="white--text">
-            {{title}}
-          </v-toolbar-title>
-                <v-btn
-                  :dark="conf.dark"
-                  style="margin-right: 0em"
-                  color="green accent-2"
-                  bottom
-                  right
-                  absolute
-                  fab
-                  v-on:click='playpause'
-                  :loading='isLoading'
-                >
-                  <v-icon v-if="!isPlaying">mdi-play</v-icon>
-                  <v-icon v-else>mdi-pause</v-icon>
-                </v-btn>
-              </v-toolbar>
+          <v-toolbar :color="conf.titleColor">
+            <v-toolbar-title class="white--text">
+              {{title}}
+            </v-toolbar-title>
+            <v-btn
+              :dark="conf.dark"
+              style="margin-right: 0em"
+              color="green accent-2"
+              bottom
+              right
+              absolute
+              fab
+              v-on:click='playpause'
+              :loading='isLoading'
+            >
+              <v-icon v-if="!isPlaying">mdi-play</v-icon>
+              <v-icon v-else>mdi-pause</v-icon>
+            </v-btn>
+          </v-toolbar>
           <v-card-text
             class="text-center"
             style="padding-left: 0px; padding-right: 0px"
@@ -79,12 +79,12 @@ export default {
   },
   methods: {
     initPlayer: function () {
-      this.player = new player(this.conf.dark, this.$refs.playlist, this.conf.zoom)
+      this.player = new player(this.conf.dark, this.$refs.playlist, this.conf.zoom, this.conf.exclSolo)
       const playlist = this.$refs.playlist
       console.log(this.$refs.playlist.$el)
       playlist.style.setProperty("width", 100)
       this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded)
-      this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime)
+      // this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime)
       if(this.isLoading != true) {
         this.saveState()
         this.stop()
@@ -121,9 +121,6 @@ export default {
     stop: function () {
       this.player.playlist.getEventEmitter().emit('stop')
       this.isPlaying = false
-    },
-    toggleMode: function () {
-      this.$emit('toggleMode', "foo")
     },
     audioLoaded: function () {
       this.isLoading = false

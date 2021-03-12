@@ -31,8 +31,7 @@ export default {
             dark: false,
             player: null,
             combKey: 42,
-            playerconf: {
-            },
+            playerconf: {},
             trackstoload: [],
             tracklist: []
         }
@@ -60,10 +59,11 @@ export default {
                 var trackstoload = []
                 for (const [index, stem] of this.playerconf.streams.entries()) {
                     trackstoload.push(
-                        { 'name': stem.name,
-                          'customClass': "track" + index.toString(),
-                        'solo': false,
-                        'mute': false,
+                    { 
+                        'name': stem.name,
+                        'customClass': "track" + index.toString(),
+                        'solo': stem.solo,
+                        'mute': stem.mute,
                         'src': stem.url
                     })
                 }

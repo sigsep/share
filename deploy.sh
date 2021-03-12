@@ -10,8 +10,12 @@ npm run build
 cd dist
 
 # if you are deploying to a custom domain
-# echo 'www.example.com' > CNAME
+echo 'share.unmix.app' > CNAME
 
+# specifically needed to handle history mode
+cp index.html 404.html
+
+# disable jekyll parsing
 touch .nojekyll
 
 git init

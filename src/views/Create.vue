@@ -18,16 +18,6 @@
               placeholder="Track title"
             ></v-text-field>
           </v-col>
-<!--          <v-col cols="4" sm="4">-->
-<!--            Waveform Zoom {{ playerconf.zoom }} Samples per Pixel-->
-<!--            <v-slider-->
-<!--              v-model="playerconf.zoom"-->
-<!--              class="align-center"-->
-<!--              :max="10240"-->
-<!--              :min="256"-->
-<!--            >-->
-<!--            </v-slider>-->
-<!--          </v-col>-->
         </v-row>
         <v-row justify="center" align="center" v-for="(stem, index) in playerconf.streams"  v-bind:key="index">
           <v-col cols="12" sm="1">
@@ -55,38 +45,82 @@
               placeholder="Source Name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="9">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="stem.url"
               label="URL"
               placeholder="URL"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" sm="1">
+            <v-switch
+              v-model="stem.mute"
+              label="mute"
+            ></v-switch>
+          </v-col>
+          <v-col cols="12" sm="1">
+            <v-switch
+              v-model="stem.solo"
+              label="solo"
+            ></v-switch>
+          </v-col>
         </v-row>
         <v-row>
-
-          <v-col cols="12" sm="6">
-            <v-btn-toggle
-          >
-                <v-btn
-                  v-on:click="addButton"
-                  color="primary"
-                  small
-                  :disabled="allFilled"
-                >
-                  <v-icon>mdi-plus</v-icon>Add Track
-                </v-btn>
-              <v-btn
-                v-on:click="loadTracks"
-                color="green"
-                small
-                :disabled="allFilled"
-              >
-                <v-icon>mdi-arrow-right</v-icon> Preview Track
-              </v-btn>
-
-          </v-btn-toggle>
+          <v-col cols="12" sm="2">
+            <v-btn
+              v-on:click="addButton"
+              color="primary"
+              :disabled="allFilled"
+            >
+              <v-icon>mdi-plus</v-icon>Add Track
+            </v-btn>
          </v-col>
+
+          <v-col cols="12" sm="2">
+            <v-btn
+              v-on:click="loadTracks"
+              color="green"
+              :disabled="allFilled"
+            >
+              <v-icon>mdi-arrow-right</v-icon> Preview Track
+            </v-btn>
+         </v-col>
+         <v-col cols="12" sm="2">
+            <v-switch
+              v-model="playerconf.exclSolo"
+              label="Solo switch-mode"
+            ></v-switch>
+         </v-col>
+         <v-col cols="12" sm="2">
+          <v-menu
+              ref="titlecolormenu"
+              v-model="titleColorMenu"
+              :close-on-content-click="false"
+            >
+            <template v-slot:activator="{ on }">
+              <v-btn  :color="playerconf.titleColor" v-on="on"></v-btn>
+            </template>
+            <v-color-picker
+              class="ma-2"
+              v-model="playerconf.titleColor"
+              v-if="titleColorMenu"
+              @click="$refs.titlecolormenu.save(playerconf.titleColor)"
+            >
+            </v-color-picker>
+            </v-menu>
+            Title Color
+         </v-col>
+         <v-col cols="12" sm="2">
+            Visible excerpt {{ 980 * (playerconf.zoom / 44100) }} (in seconds)
+            <v-slider
+              v-model="playerconf.zoom"
+              class="align-center"
+              :max="8192"
+              :min="256"
+            >
+            </v-slider>
+          </v-col>
+
         </v-row>
       </v-container>
       </v-form>
@@ -124,7 +158,7 @@
                 margin="auto"
                 elevation="10"
               >
-                  <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
+                  <Player ref="player" :key="combKey" :urls="tracklist" :conf="playerconf"></Player>
               </v-sheet>
             </v-col>
         </v-row>
@@ -154,21 +188,28 @@ export default {
       enableShare: true,
       shareURL: "",
       routeId: "",
+      titleColorMenu: false,
       playerconf: {
         title: "My Track title",
         zoom: 1024,
+        titleColor: "#666666",
         dark: true,
+        exclSolo: false,
         streams: [
           {
             name: "vocals",
             url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
             color: "#000000",
+            mute: false,
+            solo: false,
             menu: false
           },
           {
             name: "drums",
             url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
             color: "#48bd75",
+            mute: false,
+            solo: false,
             menu: false
           },
           ]
@@ -191,6 +232,11 @@ export default {
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
       return !!pattern.test(str)
     },
+    // processURL (str) {
+      // TODO: 1) identify dropbox share 2) light up button 3) on button press, convert url
+        // var str = "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a";
+        // var res = str.split("/").slice(4, 6);
+    // },
     addButton (){
       this.playerconf.streams.push(
         {
@@ -210,22 +256,26 @@ export default {
             { 'name': stem.name,
               'waveOutlineColor': stem.color,
               'customClass': "track" + index.toString(),
-              'solo': false,
-              'mute': false,
+              'solo': stem.solo,
+              'mute': stem.mute,
               'src': stem.url
           })
       }
       this.tracklist = trackstoload
     },
     async insertTracks () {
-      // TODO: set a flag for is loaded
+      // TODO: set a flag for is_loaded
       var record = await db.collection("multitracks").add(this.playerconf)
       this.routeId = "/" + record.id  // TODO: get real url from router
-      this.shareURL = "https://sigsep.github.io/share/#" + this.routeId
+      this.shareURL = "https://share.unmix.app" + this.routeId
       this.enableShare = false
     },
   },
   computed: {
+    playersize: function () {
+      console.log(this.$refs.player.$el.width)
+      return 1.0
+    },
     title: function () {
       return this.playerconf.title
     },
