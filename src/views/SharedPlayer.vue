@@ -28,7 +28,6 @@ export default {
     components: { Player },
     data () {
         return {
-            dark: false,
             player: null,
             combKey: 42,
             playerconf: {},
@@ -61,6 +60,7 @@ export default {
                     trackstoload.push(
                     { 
                         'name': stem.name,
+                        'color': stem.color,
                         'customClass': "track" + index.toString(),
                         'solo': stem.solo,
                         'mute': stem.mute,
@@ -80,4 +80,5 @@ export default {
 #player {
   z-index: -1000
 }
+
 </style>
