@@ -27,7 +27,7 @@
               :close-on-content-click="false"
             >
             <template v-slot:activator="{ on }">
-            <v-btn :color="stem.color" v-on="on"></v-btn>
+            <v-btn :color="stem.color" v-on="on">Color</v-btn>
             </template>
             <v-color-picker
               class="ma-2"
@@ -98,7 +98,7 @@
          <v-col cols="12" sm="2">
             <v-switch
               v-model="playerconf.exclSolo"
-              label="Solo switch-mode"
+              label="Switch mode"
             ></v-switch>
          </v-col>
          <v-col cols="12" sm="2">
@@ -108,7 +108,7 @@
               :close-on-content-click="false"
             >
             <template v-slot:activator="{ on }">
-              <v-btn  :color="playerconf.titleColor" v-on="on"></v-btn>
+              <v-btn  :color="playerconf.titleColor" v-on="on">Title Color</v-btn>
             </template>
             <v-color-picker
               class="ma-2"
@@ -118,7 +118,7 @@
             >
             </v-color-picker>
             </v-menu>
-            Title Color
+            
          </v-col>
          <v-col cols="12" sm="3">
             Visible excerpt: {{ Math.round((980 * (playerconf.zoom / 44100) + Number.EPSILON) * 10) / 10 }}s
