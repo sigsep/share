@@ -22,9 +22,9 @@
           </v-toolbar>
           <v-card-text
             class="text-center"
-            style="padding-left: 0px; padding-right: 0px"
+            style="padding-left: 0px; padding-right: 0px; "
           >
-            <div id="playlist" ref="playlist"></div>
+            <div id="playlist" ref="playlist" :style="cssProps"></div>
             <div style="margin-bottom: -10px; margin-top: 5px" v-if="NumberOfTracks > 0">
               <b>Keyboard Shortcuts</b>:
                 Play/Pause: <kbd>Space</kbd> –
@@ -38,6 +38,7 @@
 
 <script>
 import Mousetrap from 'mousetrap'
+import _ from 'lodash'
 import player from './player.js'
 import './dark.css';
 
@@ -50,10 +51,7 @@ export default {
   },
   data: function () {
     return {
-      bgColor: {
-        type: String,
-        default: "red"
-      },
+      trackColors: [],
       isPlaying: false,
       isLoading: false,
       player: Object,
@@ -65,7 +63,7 @@ export default {
   },
   mounted: function () {
     Mousetrap.bind('space', this.playpause)
-    this.initPlayer()
+    this.initOrUpdate()
   },
   beforeDestroy: function () {
     Mousetrap.unbind('space');
@@ -78,20 +76,19 @@ export default {
     delete this.player;
   },
   methods: {
-    initPlayer: function () {
-      this.player = new player(this.conf.dark, this.$refs.playlist, this.conf.zoom, this.conf.exclSolo)
+    initOrUpdate: function () {
+      this.player = new player(this.$refs.playlist, this.conf.zoom, this.conf.exclSolo)
       const playlist = this.$refs.playlist
-      console.log(this.$refs.playlist.$el)
       playlist.style.setProperty("width", 100)
       this.player.playlist.getEventEmitter().on('audiosourcesloaded', this.audioLoaded)
-      // this.player.playlist.getEventEmitter().on('timeupdate', this.updateTime)
       if(this.isLoading != true) {
         this.saveState()
         this.stop()
         this.isLoading = true
         this.player.loadTargets(this.urls)
         for (var i = 0; i < this.urls.length; ++i) {
-            (function (i, e) {
+          (function (i, e) {
+                e.trackColors.push(e.urls[i].color)
                 Mousetrap.bind(String(i + 1), function () {
                   e.player.playlist.getEventEmitter().emit('solo', e.player.playlist.tracks[i])
                 });
@@ -128,6 +125,9 @@ export default {
     updateTime: function (playbackPosition) {
       this.playbackPosition = playbackPosition
     },
+    debounceInitOrUpdate:_.debounce(function(){
+      this.initOrUpdate()
+    }, 600),
   },
   computed: {
     title: function () {
@@ -144,11 +144,19 @@ export default {
       else {
         return this.player.playlist.tracks.length
       }
+    },
+    cssProps() {
+      var props = {}
+      for (var i = 0; i < this.urls.length; ++i) {
+        console.log(i)
+        props['--track' + i.toString()] = this.trackColors[i]
+      }
+      return props
     }
   },
   watch: {
     urls: {
-      handler: 'initPlayer'
+      handler: 'debounceInitOrUpdate',
     },
   }
 }
@@ -157,13 +165,53 @@ export default {
 
 <style>
 
-#playlist .playlist-tracks .track0 header {
-  background-color:#000000;
+.playlist-tracks .track0 header {
+  background-color:var(--track0);
   color: white;
 }
 
-#playlist .playlist-tracks .track1 header {
-  background-color:#48bd75;
+.playlist-tracks .track1 header {
+  background-color:var(--track1);
+  color: white;
+}
+
+.playlist-tracks .track2 header {
+  background-color:var(--track2);
+  color: white;
+}
+
+.playlist-tracks .track3 header {
+  background-color:var(--track3);
+  color: white;
+}
+
+.playlist-tracks .track4 header {
+  background-color:var(--track4);
+  color: white;
+}
+
+.playlist-tracks .track5 header {
+  background-color:var(--track5);
+  color: white;
+}
+
+.playlist-tracks .track6 header {
+  background-color:var(--track6);
+  color: white;
+}
+
+.playlist-tracks .track7 header {
+  background-color:var(--track7);
+  color: white;
+}
+
+.playlist-tracks .track8 header {
+  background-color:var(--track8);
+  color: white;
+}
+
+.playlist-tracks .track9 header {
+  background-color:var(--track9);
   color: white;
 }
 

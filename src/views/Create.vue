@@ -64,6 +64,16 @@
               label="solo"
             ></v-switch>
           </v-col>
+          <v-col>
+            <v-btn
+              v-on:click="closeButton(index)"
+              color="red"
+              small
+              fab
+            >
+              <v-icon>mdi-minus</v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" sm="2">
@@ -72,17 +82,17 @@
               color="primary"
               :disabled="allFilled"
             >
-              <v-icon>mdi-plus</v-icon>Add Track
+              <v-icon>mdi-plus</v-icon>Add
             </v-btn>
          </v-col>
 
           <v-col cols="12" sm="2">
             <v-btn
               v-on:click="loadTracks"
-              color="green"
               :disabled="allFilled"
+              color="green"
             >
-              <v-icon>mdi-arrow-right</v-icon> Preview Track
+              <v-icon>mdi-arrow-down</v-icon> Preview
             </v-btn>
          </v-col>
          <v-col cols="12" sm="2">
@@ -110,13 +120,13 @@
             </v-menu>
             Title Color
          </v-col>
-         <v-col cols="12" sm="2">
-            Visible excerpt {{ 980 * (playerconf.zoom / 44100) }} (in seconds)
+         <v-col cols="12" sm="3">
+            Visible excerpt: {{ Math.round((980 * (playerconf.zoom / 44100) + Number.EPSILON) * 10) / 10 }}s
             <v-slider
               v-model="playerconf.zoom"
               class="align-center"
               :max="8192"
-              :min="256"
+              :min="224"
             >
             </v-slider>
           </v-col>
@@ -163,11 +173,6 @@
             </v-col>
         </v-row>
       </v-container>
-
-      <!-- <pre>
-          <iframe width="100%" height="490rem" src="{"https://sigsep.github.io"+routeId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" class="" allowfullscreen></iframe>
-      </pre> -->
-
     </v-content>
   </v-app>
 </template>
@@ -175,6 +180,8 @@
 <script>
 import Player from '@/components/Player.vue'
 import {db} from '@/main'
+
+const codec = require('json-url')('lzw')
 
 export default {
   name: 'Home',
@@ -185,33 +192,26 @@ export default {
       player: null,
       combKey: 42,
       showPlayer: false,
+      previewDisabled: false,
       enableShare: true,
       shareURL: "",
       routeId: "",
       titleColorMenu: false,
       playerconf: {
         title: "My Track title",
-        zoom: 1024,
+        zoom: 990,
         titleColor: "#666666",
         dark: true,
         exclSolo: false,
         streams: [
           {
             name: "vocals",
-            url: "https://dl.dropboxusercontent.com/s/70r7pym621ayoe8/vocals.m4a",
+            url: "",
             color: "#000000",
             mute: false,
             solo: false,
             menu: false
-          },
-          {
-            name: "drums",
-            url: "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a",
-            color: "#48bd75",
-            mute: false,
-            solo: false,
-            menu: false
-          },
+          }
           ]
       },
       trackstoload: [],
@@ -234,27 +234,33 @@ export default {
     },
     // processURL (str) {
       // TODO: 1) identify dropbox share 2) light up button 3) on button press, convert url
+        // https://www.dropbox.com/s/xsnkutho5wj4xko/vocals.flac?dl=0
         // var str = "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a";
         // var res = str.split("/").slice(4, 6);
     // },
     addButton (){
-      this.playerconf.streams.push(
-        {
-          name: "",
-          url: "",
-          color: "#" + Math.floor(Math.random()*16777215).toString(16),
-          menu: false
-        }
-      )
+      if (this.playerconf.streams.length <= 10) {
+        this.playerconf.streams.push(
+          {
+            name: "",
+            url: "",
+            color: "#" + Math.floor(Math.random()*16777215).toString(16),
+            menu: false
+          }
+        )
+      }
     },
-    loadTracks () {
+    closeButton (index){
+        this.playerconf.streams.splice(index, 1)
+    },
+    loadTracks: _.debounce(function() {
       this.showPlayer = true
       this.combKey = Math.ceil(Math.random() * 10000)
       var trackstoload = []
       for (const [index, stem] of this.playerconf.streams.entries()) {
         trackstoload.push(
             { 'name': stem.name,
-              'waveOutlineColor': stem.color,
+              'color': stem.color,
               'customClass': "track" + index.toString(),
               'solo': stem.solo,
               'mute': stem.mute,
@@ -262,10 +268,11 @@ export default {
           })
       }
       this.tracklist = trackstoload
-    },
+    }, 600),
     async insertTracks () {
       // TODO: set a flag for is_loaded
       var record = await db.collection("multitracks").add(this.playerconf)
+      codec.compress(this.playerconf).then(result => console.log(result))
       this.routeId = "/" + record.id  // TODO: get real url from router
       this.shareURL = "https://share.unmix.app" + this.routeId
       this.enableShare = false
@@ -273,7 +280,6 @@ export default {
   },
   computed: {
     playersize: function () {
-      console.log(this.$refs.player.$el.width)
       return 1.0
     },
     title: function () {
@@ -283,7 +289,6 @@ export default {
       return this.playerconf.streams.some( (stem) => (stem.url === "") )
     }
   }
-
 }
 </script>
 

@@ -1,11 +1,6 @@
 import * as WaveformPlaylist from 'waveform-playlist'
 
-var Player = function (dark, ref, zoom = 1280, exclSolo = False) {
-    if (dark) {
-        var wcolor = "black"
-    } else {
-        var wcolor = "white"
-    }
+var Player = function (ref, zoom = 1280, exclSolo = False) {
     this.playlist = WaveformPlaylist.init({
         samplesPerPixel: zoom,
         waveHeight: 60,
@@ -16,7 +11,7 @@ var Player = function (dark, ref, zoom = 1280, exclSolo = False) {
         isAutomaticScroll: true,
         state: 'cursor',
         colors: {
-            waveOutlineColor: wcolor
+            waveOutlineColor: "black"
         },
         controls: {
             show: true, //whether or not to include the track controls
@@ -26,12 +21,12 @@ var Player = function (dark, ref, zoom = 1280, exclSolo = False) {
     });
 }
 
-Player.prototype.loadTargets = function (trackurls) {
+Player.prototype.loadTargets = function (tracks) {
     this.playlist.getEventEmitter().emit('stop')
     this.playlist.clear();
     this.playlist.tracks = []
     var tracksToLoad = []
-    for (let track of trackurls) {
+    for (let track of tracks) {
         tracksToLoad.push(
             {
                 "src": track.src,
@@ -43,6 +38,18 @@ Player.prototype.loadTargets = function (trackurls) {
         );
     }
     this.playlist.load(tracksToLoad);
+}
+
+Player.prototype.addTrack = function(track) {
+  this.playlist.load([
+    {
+        "src": track.src,
+        "name": track.name,
+        "muted": track.mute,
+        "customClass": track.customClass,
+        "soloed": track.solo,
+    }
+  ])
 }
 
 export default Player
