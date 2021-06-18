@@ -1,6 +1,6 @@
 import * as WaveformPlaylist from 'waveform-playlist'
 
-var Player = function (ref, zoom = 1280, exclSolo = False) {
+var Player = function (ref, zoom = 1280, exclSolo = false) {
     this.playlist = WaveformPlaylist.init({
         samplesPerPixel: zoom,
         waveHeight: 60,
