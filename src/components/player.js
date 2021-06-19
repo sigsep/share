@@ -15,7 +15,11 @@ var Player = function (ref, zoom = 1280, exclSolo = false) {
         },
         controls: {
             show: true, //whether or not to include the track controls
-            width: 100 //width of controls in pixels
+            width: 140, //width of controls in pixels
+            widgets: {
+                remove: false,
+                collapse: false
+            },
         },
         zoomLevels: [zoom]
     });

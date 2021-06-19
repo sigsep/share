@@ -165,52 +165,52 @@ export default {
 
 <style>
 
-.playlist-tracks .track0 header {
+.playlist-tracks .track0 .track-header {
   background-color:var(--track0);
   color: white;
 }
 
-.playlist-tracks .track1 header {
+.playlist-tracks .track1 .track-header {
   background-color:var(--track1);
   color: white;
 }
 
-.playlist-tracks .track2 header {
+.playlist-tracks .track2 .track-header {
   background-color:var(--track2);
   color: white;
 }
 
-.playlist-tracks .track3 header {
+.playlist-tracks .track3 .track-header {
   background-color:var(--track3);
   color: white;
 }
 
-.playlist-tracks .track4 header {
+.playlist-tracks .track4 .track-header {
   background-color:var(--track4);
   color: white;
 }
 
-.playlist-tracks .track5 header {
+.playlist-tracks .track5 .track-header {
   background-color:var(--track5);
   color: white;
 }
 
-.playlist-tracks .track6 header {
+.playlist-tracks .track6 .track-header {
   background-color:var(--track6);
   color: white;
 }
 
-.playlist-tracks .track7 header {
+.playlist-tracks .track7 .track-header {
   background-color:var(--track7);
   color: white;
 }
 
-.playlist-tracks .track8 header {
+.playlist-tracks .track8 .track-header {
   background-color:var(--track8);
   color: white;
 }
 
-.playlist-tracks .track9 header {
+.playlist-tracks .track9 .track-header {
   background-color:var(--track9);
   color: white;
 }

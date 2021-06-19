@@ -50,6 +50,8 @@
               v-model="stem.url"
               label="URL"
               placeholder="URL"
+              :rules="[rules.required, rules.url]"
+              :prepend-icon="stem.is_dropbox ? 'mdi-dropbox' : ''"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="1">
@@ -197,6 +199,12 @@ export default {
       shareURL: "",
       routeId: "",
       titleColorMenu: false,
+      rules: {
+        required: value => !!value || 'Required.',
+        url: value => {
+          return this.validURL(value) || 'Invalid URL.'
+        },
+      },
       playerconf: {
         title: "My Track title",
         zoom: 990,
@@ -210,7 +218,8 @@ export default {
             color: "#000000",
             mute: false,
             solo: false,
-            menu: false
+            menu: false,
+            is_dropbox: false,
           }
           ]
       },
@@ -287,6 +296,26 @@ export default {
     },
     allFilled: function () {
       return this.playerconf.streams.some( (stem) => (stem.url === "") )
+    }
+  },
+  watch: {
+    playerconf: {
+      deep: true,
+      handler() {
+        for (const [index, stem] of this.playerconf.streams.entries()) {
+          if (this.validURL(stem.url) && stem.url.startsWith('https://www.dropbox.com/s')) {
+            this.playerconf.streams[index].is_dropbox = true
+            var slice = stem.url.split("/").slice(4, 6)
+            stem.url = "https://dl.dropboxusercontent.com/s/" + slice[0] + "/" + slice[1]
+          } else {
+            if (stem.url.startsWith('https://dl.dropboxusercontent.com/s/')) {
+              this.playerconf.streams[index].is_dropbox = true
+            } else{
+              this.playerconf.streams[index].is_dropbox = false
+            }
+          }
+        }
+      }
     }
   }
 }
