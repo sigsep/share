@@ -1,4 +1,4 @@
-# my-app
+# Open-Unmix share platform
 
 ## Project setup
 ```
