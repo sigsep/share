@@ -7,7 +7,7 @@
             </v-toolbar-title>
             <v-btn
               style="margin-right: 0em"
-              color="green accent-2"
+              color="green accent-3"
               bottom
               right
               absolute

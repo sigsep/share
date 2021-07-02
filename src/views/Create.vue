@@ -10,14 +10,14 @@
       <v-form dense>
       <v-container>
         <v-row dense>
-          <v-col cols="12" sm="1">
+          <v-col cols="12" md="1">
           <v-menu
               ref="titlecolormenu"
               v-model="titleColorMenu"
               :close-on-content-click="false"
             >
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on"><v-icon>mdi-palette</v-icon></v-btn>
+              <v-btn icon fab v-on="on"><v-icon>mdi-palette</v-icon></v-btn>
             </template>
             <v-color-picker
               class="ma-2"
@@ -28,7 +28,7 @@
             </v-color-picker>
             </v-menu>
          </v-col>
-          <v-col dense cols="12" sm="10">
+          <v-col dense cols="12" md="11">
             <v-text-field
               v-model="playerconf.title"
               label="Track title"
@@ -38,8 +38,9 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-row justify="center" align="center" v-for="(stem, index) in playerconf.streams"  v-bind:key="index">
-          <v-col cols="12" sm="1">
+        <v-sheet rounded="lg">
+        <v-row v-for="(stem, index) in playerconf.streams"  v-bind:key="index">
+          <v-col cols="12" md="1">
             <v-menu
               ref="stemmenu"
               v-model="stem.menu"
@@ -57,7 +58,7 @@
             </v-color-picker>
             </v-menu>
           </v-col>
-          <v-col cols="12" sm="2">
+          <v-col cols="12" md="2">
             <v-text-field
               v-model="stem.name"
               label="Source Name"
@@ -66,7 +67,7 @@
               placeholder="Source Name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="6">
+          <v-col cols="12" md="6">
             <v-text-field
               v-model="stem.url"
               label="URL"
@@ -76,17 +77,22 @@
               :prepend-icon="stem.is_dropbox ? 'mdi-dropbox' : ''"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="1">
+          <v-col cols="12" md="1">
             <v-switch
               v-model="stem.mute"
               label="mute"
+              color="red"
+              inset
               dense
             ></v-switch>
           </v-col>
-          <v-col cols="12" sm="1">
+          <v-col cols="12" md="1">
             <v-switch
               v-model="stem.solo"
               label="solo"
+              color="green"
+
+              inset
               dense
             ></v-switch>
           </v-col>
@@ -102,24 +108,17 @@
             </v-btn>
           </v-col>
         </v-row>
+        </v-sheet>
+        <p></p>
+        <v-container>
         <v-row>
-          <v-col cols="12" sm="2">
-            <v-btn
-              v-on:click="addButton"
-              color="primary"
-              :disabled="allFilled"
-            >
-              <v-icon>mdi-plus</v-icon>Add
-            </v-btn>
-         </v-col>
-
-         <v-col cols="12" sm="2">
+         <v-col cols="12" md="2">
             <v-switch
               v-model="playerconf.exclSolo"
               label="Switch mode"
             ></v-switch>
          </v-col>
-         <v-col cols="12" sm="3">
+         <v-col cols="12" md="9">
             Zoom: {{ Math.round((980 * (playerconf.zoom / 44100) + Number.EPSILON) * 10) / 10 }}s
             <v-slider
               v-model="playerconf.zoom"
@@ -129,8 +128,19 @@
             >
             </v-slider>
           </v-col>
-
+          <v-col cols="12" md="1">
+            <v-btn
+              v-on:click="addButton"
+              color="primary"
+              fab
+              :disabled="allFilled"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+         </v-col>
         </v-row>
+
+        </v-container>
       </v-container>
       </v-form>
     </v-content>
@@ -308,6 +318,7 @@ export default {
         for (const [index, stem] of this.playerconf.streams.entries()) {
           if (this.validURL(stem.url)) {
             this.allvalid = true
+            this.enableShare = true
             // detect dropbox links
             if (stem.url.startsWith('https://www.dropbox.com/s')) {
               this.playerconf.streams[index].is_dropbox = true
@@ -332,6 +343,10 @@ export default {
 </script>
 
 <style lang="stylus">
+
+.v-label {
+  font-size: 1em;
+}
 
 .select {
   z-index: 1000
