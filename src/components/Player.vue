@@ -1,35 +1,74 @@
 <template>
   <div>
-        <v-card>
+        <v-card dark>
           <v-toolbar :color="conf.titleColor">
-            <v-toolbar-title class="white--text">
-              {{title}}
-            </v-toolbar-title>
             <v-btn
-              style="margin-right: 0em"
               color="green accent-3"
-              bottom
-              right
-              absolute
-              fab
+              style="margin-left:2px;"
+              icon
+              outlined
+              large
               v-on:click='playpause'
               :loading='isLoading'
             >
               <v-icon v-if="!isPlaying">mdi-play</v-icon>
               <v-icon v-else>mdi-pause</v-icon>
             </v-btn>
+            <v-toolbar-title class="white--text">
+              {{title}}
+            </v-toolbar-title>
+
+              <v-spacer></v-spacer>
+              <v-dialog
+                dark
+                v-model="dialog"
+                scrollable
+                max-width="640px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="white"
+                    dark
+                    icon
+                    top
+                    left
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-information</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>About share.unmix.app</v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-text style="height: 300px;">
+                    <div style="margin-bottom: -10px; margin-top: 5px">
+                      <b>Keyboard Shortcuts</b>:
+                        Play/Pause: <kbd>Space</kbd> –
+                        Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd> –
+                        Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd>
+                    </div>
+
+                  </v-card-text>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="dialog = false"
+                    >
+                      Close
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           </v-toolbar>
           <v-card-text
             class="text-center"
             style="padding-left: 0px; padding-right: 0px; "
           >
             <div id="playlist" ref="playlist" :style="cssProps"></div>
-            <div style="margin-bottom: -10px; margin-top: 5px" v-if="NumberOfTracks > 0">
-              <b>Keyboard Shortcuts</b>:
-                Play/Pause: <kbd>Space</kbd> –
-                Solo/Unsolo Sources: <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd> –
-                Mute/Unmute Sources: <kbd>Ctrl</kbd> + <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd>
-            </div>
+            <p style="margin-bottom:-10px; padding: 0" class="createdwith">Created with <a href="https://share.unmix.app">share.unmix.app</a></p>
           </v-card-text>
           </v-card>
       </div>
@@ -57,7 +96,8 @@ export default {
       loaderColor: 'orange',
       loaderHeight: '26px',
       playbackPosition: 0,
-      lastplaybackPosition: 0
+      lastplaybackPosition: 0,
+      dialog: false
     }
   },
   mounted: function () {
@@ -163,6 +203,19 @@ export default {
 
 
 <style>
+
+.createdwith {
+  margin-top: 0px; 
+  margin-bottom: -10px; 
+  padding: 0px; 
+  color: white; 
+  font-size: 0.9em;
+}
+
+.createdwith a {
+  color: #d3b719;
+  text-decoration: none;
+}
 
 .playlist-tracks .track0 .track-header {
   background-color:var(--track0);

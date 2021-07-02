@@ -1,5 +1,5 @@
 <template>
-    <v-app class="ma-0 pa-0" style="background-color: white;">
+    <v-app class="ma-0 pa-0">
         <v-container class="ma-0 pa-0" fill-height fluid>
             <v-row align="center"
                    justify="center">
@@ -11,7 +11,6 @@
                     >
                         <Player :key="combKey" :ref="player" :urls="tracklist" :conf="playerconf"></Player>
                     </v-sheet>
-                    <p style="margin-top: 10px; color: black">Created with share.unmix.app</p>
                 </v-container>
                 </v-col>
             </v-row>
