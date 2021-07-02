@@ -6,15 +6,34 @@
     >
       <v-toolbar-title>share.unmix.app</v-toolbar-title>
     </v-app-bar>
-
     <v-content>
-      <v-form>
+      <v-form dense>
       <v-container>
         <v-row dense>
-          <v-col dense cols="12" sm="12">
+          <v-col cols="12" sm="1">
+          <v-menu
+              ref="titlecolormenu"
+              v-model="titleColorMenu"
+              :close-on-content-click="false"
+            >
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on"><v-icon>mdi-palette</v-icon></v-btn>
+            </template>
+            <v-color-picker
+              class="ma-2"
+              v-model="playerconf.titleColor"
+              v-if="titleColorMenu"
+              @click="$refs.titlecolormenu.save(playerconf.titleColor)"
+            >
+            </v-color-picker>
+            </v-menu>
+         </v-col>
+          <v-col dense cols="12" sm="10">
             <v-text-field
               v-model="playerconf.title"
               label="Track title"
+              solo dense
+              :background-color="playerconf.titleColor"
               placeholder="Track title"
             ></v-text-field>
           </v-col>
@@ -27,7 +46,7 @@
               :close-on-content-click="false"
             >
             <template v-slot:activator="{ on }">
-            <v-btn :color="stem.color" v-on="on">Color</v-btn>
+              <v-btn icon fab v-on="on"><v-icon>mdi-palette</v-icon></v-btn>
             </template>
             <v-color-picker
               class="ma-2"
@@ -42,6 +61,8 @@
             <v-text-field
               v-model="stem.name"
               label="Source Name"
+              solo dense
+              :background-color="stem.color"
               placeholder="Source Name"
             ></v-text-field>
           </v-col>
@@ -49,6 +70,7 @@
             <v-text-field
               v-model="stem.url"
               label="URL"
+              dense
               placeholder="URL"
               :rules="[rules.required, rules.url]"
               :prepend-icon="stem.is_dropbox ? 'mdi-dropbox' : ''"
@@ -58,12 +80,14 @@
             <v-switch
               v-model="stem.mute"
               label="mute"
+              dense
             ></v-switch>
           </v-col>
           <v-col cols="12" sm="1">
             <v-switch
               v-model="stem.solo"
               label="solo"
+              dense
             ></v-switch>
           </v-col>
           <v-col>
@@ -71,6 +95,7 @@
               v-on:click="closeButton(index)"
               color="red"
               small
+              dense
               fab
             >
               <v-icon>mdi-minus</v-icon>
@@ -88,42 +113,14 @@
             </v-btn>
          </v-col>
 
-          <v-col cols="12" sm="2">
-            <v-btn
-              v-on:click="loadTracks"
-              :disabled="allFilled"
-              color="green"
-            >
-              <v-icon>mdi-arrow-down</v-icon> Preview
-            </v-btn>
-         </v-col>
          <v-col cols="12" sm="2">
             <v-switch
               v-model="playerconf.exclSolo"
               label="Switch mode"
             ></v-switch>
          </v-col>
-         <v-col cols="12" sm="2">
-          <v-menu
-              ref="titlecolormenu"
-              v-model="titleColorMenu"
-              :close-on-content-click="false"
-            >
-            <template v-slot:activator="{ on }">
-              <v-btn  :color="playerconf.titleColor" v-on="on">Title Color</v-btn>
-            </template>
-            <v-color-picker
-              class="ma-2"
-              v-model="playerconf.titleColor"
-              v-if="titleColorMenu"
-              @click="$refs.titlecolormenu.save(playerconf.titleColor)"
-            >
-            </v-color-picker>
-            </v-menu>
-            
-         </v-col>
          <v-col cols="12" sm="3">
-            Visible excerpt: {{ Math.round((980 * (playerconf.zoom / 44100) + Number.EPSILON) * 10) / 10 }}s
+            Zoom: {{ Math.round((980 * (playerconf.zoom / 44100) + Number.EPSILON) * 10) / 10 }}s
             <v-slider
               v-model="playerconf.zoom"
               class="align-center"
@@ -137,6 +134,14 @@
       </v-container>
       </v-form>
     </v-content>
+    <v-btn
+        v-on:click="loadTracks"
+        :disabled="allFilled || !allvalid || !confChanged"
+        color="green"
+      >
+        Preview Track
+    </v-btn>
+
     <v-content style="background-color: white; padding: 0px 10px 10px" v-if="showPlayer">
       <v-container fill-height>
         <v-row>
@@ -194,8 +199,9 @@ export default {
       player: null,
       combKey: 42,
       showPlayer: false,
-      previewDisabled: false,
       enableShare: true,
+      confChanged: false,
+      allvalid: false,
       shareURL: "",
       routeId: "",
       titleColorMenu: false,
@@ -241,12 +247,6 @@ export default {
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
       return !!pattern.test(str)
     },
-    // processURL (str) {
-      // TODO: 1) identify dropbox share 2) light up button 3) on button press, convert url
-        // https://www.dropbox.com/s/xsnkutho5wj4xko/vocals.flac?dl=0
-        // var str = "https://dl.dropboxusercontent.com/s/7dc94n728l9qm5t/drums.m4a";
-        // var res = str.split("/").slice(4, 6);
-    // },
     addButton (){
       if (this.playerconf.streams.length <= 10) {
         this.playerconf.streams.push(
@@ -264,6 +264,7 @@ export default {
     },
     loadTracks: _.debounce(function() {
       this.showPlayer = true
+      this.confChanged = false
       this.combKey = Math.ceil(Math.random() * 10000)
       var trackstoload = []
       for (const [index, stem] of this.playerconf.streams.entries()) {
@@ -302,17 +303,26 @@ export default {
     playerconf: {
       deep: true,
       handler() {
+        this.confChanged = true
+        this.allvalid = false
         for (const [index, stem] of this.playerconf.streams.entries()) {
-          if (this.validURL(stem.url) && stem.url.startsWith('https://www.dropbox.com/s')) {
-            this.playerconf.streams[index].is_dropbox = true
-            var slice = stem.url.split("/").slice(4, 6)
-            stem.url = "https://dl.dropboxusercontent.com/s/" + slice[0] + "/" + slice[1]
-          } else {
-            if (stem.url.startsWith('https://dl.dropboxusercontent.com/s/')) {
+          if (this.validURL(stem.url)) {
+            this.allvalid = true
+            // detect dropbox links
+            if (stem.url.startsWith('https://www.dropbox.com/s')) {
               this.playerconf.streams[index].is_dropbox = true
-            } else{
-              this.playerconf.streams[index].is_dropbox = false
+              var slice = stem.url.split("/").slice(4, 6)
+              stem.url = "https://dl.dropboxusercontent.com/s/" + slice[0] + "/" + slice[1]
+            } else {
+              if (stem.url.startsWith('https://dl.dropboxusercontent.com/s/')) {
+                this.playerconf.streams[index].is_dropbox = true
+              } else{
+                this.playerconf.streams[index].is_dropbox = false
+              }
             }
+          }
+          else {
+            this.allvalid = false
           }
         }
       }

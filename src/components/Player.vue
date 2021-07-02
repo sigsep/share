@@ -6,7 +6,6 @@
               {{title}}
             </v-toolbar-title>
             <v-btn
-              :dark="conf.dark"
               style="margin-right: 0em"
               color="green accent-2"
               bottom
