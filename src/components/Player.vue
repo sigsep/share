@@ -1,6 +1,6 @@
 <template>
   <div>
-        <v-card dark>
+        <v-card dark fill-height>
           <v-toolbar :color="conf.titleColor">
             <v-btn
               color="green accent-3"
@@ -68,7 +68,7 @@
             style="padding-left: 0px; padding-right: 0px; "
           >
             <div id="playlist" ref="playlist" :style="cssProps"></div>
-            <p style="margin-bottom:-10px; padding: 0" class="createdwith">Created with <a href="https://share.unmix.app">share.unmix.app</a></p>
+            <p class="createdwith">Created with <a href="https://share.unmix.app">share.unmix.app</a></p>
           </v-card-text>
           </v-card>
       </div>
@@ -205,9 +205,11 @@ export default {
 <style>
 
 .createdwith {
-  margin-top: 0px; 
   margin-bottom: -10px; 
   padding: 0px; 
+  position: absolute; 
+  bottom: 0px;
+  right: 20px;
   color: white; 
   font-size: 0.9em;
 }

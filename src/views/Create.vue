@@ -1,5 +1,5 @@
 <template>
-  <v-app id='app' :dark="dark">
+  <v-app id='app' dark>
     <v-app-bar
       app
       clipped-left

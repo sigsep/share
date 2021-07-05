@@ -1,10 +1,9 @@
 <template>
     <v-app class="ma-0 pa-0">
-        <v-container class="ma-0 pa-0" fill-height fluid>
-            <v-row align="center"
-                   justify="center">
-                <v-col>
-                <v-container>
+        <v-container class="ma-0 pa-0" fluid>
+            <v-row>
+                <v-col style="padding-bottom: 0px">
+                <v-container class="ma-0 pa-0" fluid> 
                     <v-sheet
                     margin="auto"
                     elevation="10"
