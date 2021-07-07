@@ -65,7 +65,7 @@
           </v-toolbar>
           <v-card-text
             class="text-center"
-            style="padding-left: 0px; padding-right: 0px; "
+            style="padding-left: 0px; padding-right: 0px; padding-bottom: 26px"
           >
             <div id="playlist" ref="playlist" :style="cssProps"></div>
             <p class="createdwith">Created with <a href="https://share.unmix.app">share.unmix.app</a></p>
@@ -205,10 +205,10 @@ export default {
 <style>
 
 .createdwith {
-  margin-bottom: -10px; 
+  margin-bottom: 0px; 
   padding: 0px; 
   position: absolute; 
-  bottom: 0px;
+  bottom: -14px;
   right: 20px;
   color: white; 
   font-size: 0.9em;

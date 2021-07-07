@@ -92,7 +92,6 @@
               v-model="stem.solo"
               label="solo"
               color="green"
-
               inset
               dense
             ></v-switch>
@@ -156,7 +155,7 @@
     <v-content style="background-color: white; padding: 0px 10px 10px" v-if="showPlayer">
       <v-container fill-height>
         <v-row>
-          <v-col>
+          <v-col cols="12" md="3">
             <v-btn
               v-on:click="insertTracks"
               v-if="enableShare"
@@ -168,7 +167,15 @@
               Share
             </v-btn>
           </v-col>
-          <v-col>
+         <v-col cols="12" md="3">
+            <v-switch
+              light
+              v-model="embedSwitch"
+              label="embed"
+              dense
+            ></v-switch>
+         </v-col>
+          <v-col cols="12" md="6">
             <v-text-field
               :value="shareURL"
               light
@@ -213,9 +220,9 @@ export default {
       enableShare: true,
       confChanged: false,
       allvalid: false,
-      shareURL: "",
       routeId: "",
       titleColorMenu: false,
+      embedSwitch: false,
       rules: {
         required: value => !!value || 'Required.',
         url: value => {
@@ -295,11 +302,20 @@ export default {
       var record = await db.collection("multitracks").add(this.playerconf)
       codec.compress(this.playerconf).then(result => console.log(result))
       this.routeId = "/" + record.id  // TODO: get real url from router
-      this.shareURL = "https://share.unmix.app" + this.routeId
       this.enableShare = false
     },
   },
   computed: {
+    embed: function () {
+        if (this.embedSwitch) {
+          return "/embed"
+        } else {
+          return ""
+        }
+    },
+    shareURL: function () {
+      return "https://share.unmix.app" + this.routeId + this.embed
+    },
     playersize: function () {
       return 1.0
     },

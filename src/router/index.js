@@ -22,7 +22,7 @@ Vue.use(Router)
             component: Create,
         },
         {
-            path: "/:id",
+            path: "/:id/:embed?",
             name: "SharedPlayer",
             component: SharedPlayer,
         }
