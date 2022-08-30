@@ -4,16 +4,8 @@
       app
       clipped-left
     >
-      <v-toolbar-title>share.unmix.app (beta)</v-toolbar-title>
-      <v-spacer></v-spacer>
-        <v-btn
-          v-on:click="$router.push('create')"
-          color="indigo lighten-1"
-        >
-        <v-icon>mdi-plus</v-icon>
+      <v-toolbar-title>Stemle</v-toolbar-title>
 
-        Create multi-track 
-      </v-btn>
     </v-app-bar>
 
   <!-- Sizes your content based upon application components -->
@@ -23,10 +15,6 @@
        <v-container fill-height fluid>
         <v-row align="center"
               justify="center">
-          <v-col align="center">
-              <img src="/hero.png" width="100%" alt="">
-              <iframe style="max-width: 800px" width="100%" height="400px" src="https://share.unmix.app/nFngXqmpUIMVo9JCv3tc" frameborder="0"></iframe>
-          </v-col>
         </v-row>
         </v-container>
       </v-main>
@@ -66,3 +54,7 @@ export default {
   },
 }
 </script>
+
+<style>
+
+</style>

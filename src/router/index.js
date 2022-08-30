@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Home from "@/views/Home.vue";
 import Create from "@/views/Create.vue";
 import SharedPlayer from "@/views/SharedPlayer.vue";
+import Stemle from "@/views/Stemle.vue";
 import Router from 'vue-router'
 
 
@@ -22,9 +23,9 @@ Vue.use(Router)
             component: Create,
         },
         {
-            path: "/:id/:embed?",
-            name: "SharedPlayer",
-            component: SharedPlayer,
+            path: "/:id",
+            name: "Stemle",
+            component: Stemle,
         }
     ]
  });

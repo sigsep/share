@@ -3,22 +3,25 @@ import * as WaveformPlaylist from 'waveform-playlist'
 var Player = function (ref, zoom = 1280, exclSolo = false) {
     this.playlist = WaveformPlaylist.init({
         samplesPerPixel: zoom,
-        waveHeight: 60,
+        waveHeight: 27,
         container: ref,
-        timescale: true,
+        timescale: false,
         mono: true,
         exclSolo: exclSolo,
         isAutomaticScroll: true,
         state: 'cursor',
         colors: {
-            waveOutlineColor: "black"
+            waveOutlineColor: "#313131",
+            fadeColor: "black",
         },
+        barWidth: 1.5,
+        barGap: 1,
         controls: {
             show: true, //whether or not to include the track controls
-            width: 140, //width of controls in pixels
+            width: 120, //width of controls in pixels
             widgets: {
-                remove: false,
-                collapse: false
+                remove: true,
+                collapse: true
             },
         },
         zoomLevels: [zoom]

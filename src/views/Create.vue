@@ -4,10 +4,9 @@
       app
       clipped-left
     >
-      <v-toolbar-title>share.unmix.app</v-toolbar-title>
-      
+      <v-toolbar-title>stemle</v-toolbar-title>
     </v-app-bar>
-    <v-content>
+    <v-main>
       <v-form dense>
       <v-container>
         <v-row dense>
@@ -143,7 +142,7 @@
         </v-container>
       </v-container>
       </v-form>
-    </v-content>
+    </v-main>
     <v-btn
         v-on:click="loadTracks"
         :disabled="allFilled || !allvalid || !confChanged"
@@ -152,7 +151,7 @@
         Preview Track
     </v-btn>
 
-    <v-content style="background-color: white; padding: 0px 10px 10px" v-if="showPlayer">
+    <v-main style="background-color: white; padding: 0px 10px 10px" v-if="showPlayer">
       <v-container fill-height>
         <v-row>
           <v-col cols="12" md="3">
@@ -198,7 +197,7 @@
             </v-col>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

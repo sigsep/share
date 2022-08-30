@@ -1,62 +1,42 @@
 <template>
   <div>
-    <v-card dark fill-height>
-      <v-toolbar :color="conf.titleColor">
-        <v-btn
-          color="green accent-3"
-          style="margin-left: 2px"
-          icon
-          outlined
-          large
-          v-on:click="playpause"
-          :loading="isLoading"
-        >
-          <v-icon v-if="!isPlaying">mdi-play</v-icon>
-          <v-icon v-else>mdi-pause</v-icon>
-        </v-btn>
-        <v-toolbar-title class="white--text">
-          {{ title }}
-        </v-toolbar-title>
-
-        <v-spacer></v-spacer>
-        <v-dialog dark v-model="dialog" scrollable max-width="640px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="white" dark icon top left v-bind="attrs" v-on="on">
-              <v-icon>mdi-information</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>About share.unmix.app</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text style="height: 300px">
-              <div style="margin-bottom: -10px; margin-top: 5px">
-                <b>Keyboard Shortcuts</b>: Play/Pause: <kbd>Space</kbd> –
-                Solo/Unsolo Sources:
-                <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd> –
-                Mute/Unmute Sources: <kbd>Ctrl</kbd> +
-                <kbd v-for="n in NumberOfTracks" :key="n.id">{{ n }}</kbd>
-              </div>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-btn color="blue darken-1" text @click="dialog = false">
-                Close
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-      <v-card-text
-        class="text-center"
-        style="padding-left: 0px; padding-right: 0px; padding-bottom: 26px"
+    <v-container>
+      <v-btn
+        color="green accent-3"
+        style="margin-left: 2px"
+        icon
+        x-large
+        v-on:click="playpause"
+        :disabled="isPlaying"
+        :loading="isLoading"
       >
-        <!-- v-if="false"  -->
+        <v-icon>mdi-play</v-icon>
+      </v-btn>
+      <div v-if="gameover">Huuuurraaaaaay</div>
+      <v-container>
         <div id="playlist" ref="playlist" :style="cssProps"></div>
-        <p class="createdwith">
-          Created with <a href="https://share.unmix.app">share.unmix.app</a>
-        </p>
-      </v-card-text>
-    </v-card>
+      </v-container>
+      <v-container>
+        <v-row>
+          <v-col>
+            <v-autocomplete
+            v-model="guess"
+            :items="tracklist"
+            solo
+            ></v-autocomplete>
+          </v-col>
+          <v-col>
+          <v-btn
+            color="pink"
+            :disabled="gameover"
+            v-on:click="submitGuess"
+          >
+          Submit Guess
+          </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-container>
   </div>
 </template>
 
@@ -72,12 +52,18 @@ export default {
   props: {
     urls: Array,
     conf: Object,
+    guesses: Array,
   },
   data: function () {
     return {
       trackColors: [],
       isPlaying: false,
+      hasPlayed: false,
+      isFinished: false,
       isLoading: false,
+      original_urls: Array,
+      tracklist: ["wurst", "Al James - Schoolboy Facination", "toll"],
+      guess: null,
       player: Object,
       loaderColor: "orange",
       loaderHeight: "26px",
@@ -101,6 +87,22 @@ export default {
     delete this.player;
   },
   methods: {
+    submitGuess: function () {
+      if (!this.gameover) {
+        if (this.guess) {
+          if (this.guess == this.title) {
+            this.guesses.push(1);
+          }
+          else {
+            this.guesses.push(-1);
+          }
+        }
+        else {
+          this.guesses.push(0);
+        }
+        this.guess = "";
+      }
+    },
     initOrUpdate: function () {
       this.player = new player(
         this.$refs.playlist,
@@ -111,11 +113,16 @@ export default {
       playlist.style.setProperty("width", 100);
       this.player.playlist
         .getEventEmitter()
-        .on("audiosourcesloaded", this.audioLoaded);
+        .on("audiosourcesrendered", this.audioLoaded);
       if (this.isLoading != true) {
         this.saveState();
         this.stop();
         this.isLoading = true;
+
+        this.original_urls = JSON.parse(JSON.stringify(this.urls));
+        for (var j = 0; j < this.original_urls.length; ++j) {
+          this.urls[j].name = " ";
+        }
         this.player.loadTargets(this.urls);
         for (var i = 0; i < this.urls.length; ++i) {
           (function (i, e) {
@@ -155,8 +162,34 @@ export default {
       this.player.playlist.getEventEmitter().emit("stop");
       this.isPlaying = false;
     },
+    unmute: function (track) {
+      // TODO: save state so that we can resume with guesses = [0, 0, 0, 1]
+      if (this.guesses.length - 1 < this.player.playlist.tracks.length) {
+        var track_index = this.player.playlist.tracks.indexOf(track)
+        this.player.playlist.tracks[track_index].name = this.original_urls[track_index].name;
+        this.player.playlist.getEventEmitter().emit("mute", track);
+      }
+      if (this.guesses.length >= this.player.playlist.tracks.length) {
+        this.isFinished = true;
+      }
+    },
     audioLoaded: function () {
       this.isLoading = false;
+      this.check_mute()
+    },
+    check_mute: function () {
+      var mute_count = 0;
+      if (this.guesses.includes(1)) {
+        mute_count = this.player.playlist.tracks.length;
+      } else {
+        mute_count = this.guesses.length;
+      }
+      for (var g = 0; g < mute_count; ++g) {
+        var track = this.player.playlist.tracks[g];
+        if (this.player.playlist.mutedTracks.indexOf(track) > -1) {
+          this.unmute(track);
+        }
+      }
     },
     updateTime: function (playbackPosition) {
       this.playbackPosition = playbackPosition;
@@ -171,6 +204,18 @@ export default {
         return "Empty Track";
       } else {
         return this.conf.title;
+      }
+    },
+    gameover: function () {
+      if (this.guesses.includes(1)) {
+        
+        return true;
+      }
+      else if ( this.isFinished ){
+        return true;
+      }
+      else {
+        return false;
       }
     },
     NumberOfTracks: function () {
@@ -192,7 +237,10 @@ export default {
     urls: {
       handler: "debounceInitOrUpdate",
     },
-  },
+    guesses: {
+      handler: "check_mute",
+    },
+},
 };
 </script>
 
