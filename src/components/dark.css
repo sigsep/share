@@ -3,7 +3,6 @@
   padding-bottom: 0px;
   margin-bottom: 0px;
   margin-top: 0px;
-
 }
 
 .player .columns.hide {
@@ -37,7 +36,6 @@
   overflow: hidden;
   margin: 0em 0;
   width: 100%;
-
 }
 
 .playlist .playlist-time-scale {
@@ -61,7 +59,7 @@
 }
 
 .playlist .wp-fade {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .playlist .state-cursor,
@@ -116,9 +114,9 @@
 .playlist .controls .track-header button {
   width: 14px;
   height: 20px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  display: none !important;
 }
 
 .playlist .controls label {
@@ -132,7 +130,6 @@
   -moz-osx-font-smoothing: grayscale;
   transform: translate(0, 0);
   padding: 0 1rem;
-
 }
 
 .playlist .controls label:before {
@@ -170,7 +167,6 @@
   appearance: none;
   display: inline-block;
   width: 75%;
-
 }
 
 .playlist .controls input[type="range"]::-webkit-slider-runnable-track {
@@ -269,8 +265,6 @@ a:focus {
   font-size: 0.875rem;
   line-height: 0.5;
   border-radius: 0.2rem;
-  display: none !important;
-
 }
 
 .btn {

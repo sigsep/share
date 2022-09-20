@@ -42,12 +42,14 @@
 
 <script>
 import Player from '@/components/Player.vue'
-import {db} from '@/main'
+import axios from 'axios'
+
 export default {
     name: 'SharedPlayer',
     components: { Player },
     data () {
         return {
+            info: [],
             player: null,
             combKey: 42,
             playerconf: {},
@@ -68,38 +70,34 @@ export default {
     },
     created() {
         this.fetchData()
+        this.playerconf.zoom = 400
     },
     watch: {
       '$route': 'fetchData'
     },
     methods: {
         fetchData() {
-            var trackId = this.$route.params.id;
-
-            db.collection('multitracks')
-            .doc(trackId)
-            .get()
-            .then( snapshot => {
-                const document = snapshot.data()
-                var parsedDoc = JSON.parse(JSON.stringify(document))
-
-                this.playerconf = parsedDoc
-
-                this.combKey = Math.ceil(Math.random() * 10000)
-                var trackstoload = []
-                for (const [index, stem] of this.playerconf.streams.entries()) {
+            axios
+            .get('http://localhost:3000/track/' + this.$route.params.id)
+            .then(response => {
+                this.info = response.data
+                // this.combKey = Math.ceil(Math.random() * 10000)
+                var trackstoload = [];
+                for (const [index, stem] of this.info.entries()) {
                     trackstoload.push(
                     { 
                         'name': stem.name,
-                        'color': stem.color,
+                        'color': "#" + Math.floor(Math.random()*16777215).toString(16),
                         'customClass': "track" + index.toString(),
-                        'solo': stem.solo,
-                        'mute': stem.mute,
-                        'src': stem.url
+                        'solo': false,
+                        'mute': false,
+                        'src': 'http://localhost:3000' + stem.path
                     })
                 }
                 this.tracklist = trackstoload
             })
+            .catch(error => console.log(error))
+
         }
     }
 }

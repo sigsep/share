@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "express": "^4.18.1",
     "firebase": "^8.6.8",
     "jquery": "^3.6.0",
     "json-url": "^3.0.0",
